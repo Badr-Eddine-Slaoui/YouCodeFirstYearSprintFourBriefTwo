@@ -1,54 +1,54 @@
 @startuml
     abstract class User {
-        first_name : string
-        last_name : string
-        email : string
-        password : string
-        created_at : Date
+        - first_name : string
+        - last_name : string
+        - email : string
+        - password : string
+        - created_at : Date
     }
 
     class Reader {
-        role : string
+        - role : string
     }
 
     class Author {
-        role : string
+        - role : string
     }
 
     class Admin {
-        role : string
+        - role : string
     }
 
 
     class Article {
-        title : string
-        body : text
-        created_at: Date
+        - title : string
+        - body : text
+        - created_at: Date
     }
 
 
     class Comment {
-        body : text
-        created_at : Date
+        - body : text
+        - created_at : Date
     }
 
     class Like {
-        created_at : Date
+        - created_at : Date
     }
 
     interface Likable {
     }
 
     class Category {
-        name : string
+        - name : string
     }
 
     interface Reportable {
     }
 
     class Report {
-        message: ReportReason
-        created_at: Date
+        - message: ReportReason
+        - created_at: Date
     }
 
     enum ReportReason{
