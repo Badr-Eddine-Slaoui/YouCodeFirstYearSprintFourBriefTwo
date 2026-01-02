@@ -1,0 +1,88 @@
+@startuml
+    abstract class User {
+        first_name : string
+        last_name : string
+        email : string
+        password : string
+        created_at : Date
+    }
+
+    class Reader {
+        role : string
+    }
+
+    class Author {
+        role : string
+    }
+
+    class Admin {
+        role : string
+    }
+
+
+    class Article {
+        title : string
+        body : text
+        created_at: Date
+    }
+
+
+    class Comment {
+        body : text
+        created_at : Date
+    }
+
+    class Like {
+        created_at : Date
+    }
+
+    interface Likable {
+    }
+
+    class Category {
+        name : string
+    }
+
+    interface Reportable {
+    }
+
+    class Report {
+        message: ReportReason
+        created_at: Date
+    }
+
+    enum ReportReason{
+        SPAM,
+        EXPLICIT_CONTENT,
+        INSULT,
+        RACIST_CONTENT,
+        OFFENSIVE,
+        ABUSE,
+        COPYRIGHT,
+        OTHER
+    }
+
+    User <|--- Reader
+    User <|--- Admin
+    User <|--- Author
+
+    Likable <|.. Article
+    Likable <|.. Comment
+
+    Reportable <|.. Article
+    Reportable <|.. Comment
+
+
+    Article "0..*" -- "1..1" Author : belongs to >
+    Article "0..*" -- "*..*" Category : belongs to many >
+    (Article, Category) .. ArticleCategory
+    Comment "0..*" -- "1..1" Reader : belongs to >
+    Comment "0..*" -- "1..1" Article : has <
+    Reader "1..1" -- "0..*" Like : creates
+    Like "0..*" -- "1..1" Likable : targets
+    Reader "1..1" -- "0..*" Report : creates
+    Report "0..*" -- "1..1" Reportable : targets
+    Report -- ReportReason
+
+
+@endumlb
