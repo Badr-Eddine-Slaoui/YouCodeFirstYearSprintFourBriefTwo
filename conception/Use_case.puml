@@ -1,0 +1,105 @@
+@startuml
+    left to right direction
+
+    actor Visiter
+    actor Reader
+    actor Author
+    actor Admin
+
+    Visiter <|-- Reader
+    Reader <|-- Author
+    Visiter <|-- Admin
+
+    rectangle "Blog System" {
+        usecase (Read Articles) as UC1
+        usecase (Update Articles) as UC2
+        usecase (Delete Articles) as UC3
+        usecase (Add Articles) as UC4
+
+        usecase (Read Comments) as UC5
+        usecase (Update Comment) as UC6
+        usecase (Delete Comment) as UC7
+        usecase (Add Comment) as UC8
+
+        usecase (Like article) as UC9
+        usecase (Like Comment) as UC10
+
+        usecase (Report article) as UC11
+        usecase (Report Comment) as UC12
+
+        usecase (Ban User) as UC13
+        usecase (Suspend User) as UC14
+        usecase (Timeout User) as UC15
+        usecase (Black List User) as UC16
+
+        usecase (Read Categories) as UC17
+        usecase (Update Categories) as UC18
+        usecase (Delete Categories) as UC19
+        usecase (Add Categories) as UC20
+
+        usecase (Register) as UC21
+        usecase (Login) as UC22
+        usecase (Logout) as UC23
+
+        usecase (Manage Categories) as UC24
+        usecase (Manage Users) as UC25
+        usecase (Manage Article) as UC26
+        usecase (Interact With Article) as UC27
+        usecase (Manage Own Comments) as UC28
+        usecase (Interact With Article) as UC29
+
+        usecase (Delete Article) as UC30
+        usecase (Delete Comment) as UC31
+    }
+
+    UC22 ...> UC21 : <<extend>>
+    UC23 ...> UC22 : <<extend>>
+
+    UC24 ...> UC22 : <<include>>
+    UC25 ...> UC22 : <<include>>
+    UC26 ...> UC22 : <<include>>
+    UC27 ...> UC22 : <<include>>
+    UC28 ...> UC22 : <<include>>
+    UC29 ...> UC22 : <<include>>
+    UC30 ...> UC22 : <<include>>
+    UC31 ...> UC22 : <<include>>
+
+    Visiter ---> UC1
+    Visiter ---> UC21
+    Visiter ---> UC22
+
+    Reader ---> UC27
+    
+    
+    Reader ---> UC28
+    Reader ---> UC29
+    UC27 <... UC11 : <<extend>>
+    UC27 <... UC9 : <<extend>>
+    UC28 <|--- UC5
+    UC28 <|--- UC6
+    UC28 <|--- UC7
+    UC28 <|--- UC8
+    UC29 <... UC10 : <<extend>>
+    UC29 <... UC12 : <<extend>>
+
+    Author ---> UC26
+    UC26 <|--- UC2
+    UC26 <|--- UC3
+    UC26 <|--- UC4
+
+    
+    Admin ---> UC24
+    Admin ---> UC25
+    Admin ---> UC30
+    Admin ---> UC31
+    UC24 <|--- UC17
+    UC24 <|--- UC18
+    UC24 <|--- UC19
+    UC24 <|--- UC20
+    UC25 <|--- UC13
+    UC25 <|--- UC14
+    UC25 <|--- UC15
+    UC25 <|--- UC16
+
+
+@endumld
