@@ -139,6 +139,8 @@
         create: true
     });
 
+    document.getElementById('content').value = quill.root.innerHTML;
+
     document.querySelector('form').addEventListener('submit', () => {
         document.getElementById('content').value = quill.root.innerHTML;
     });
