@@ -8,7 +8,7 @@ use PDOException;
 class Database extends PDO
 {
     public static ?PDO $instance = null;
-    public function __construct() {
+    private function __construct() {
         try{
             
             require __DIR__ ."/../Helpers/env.php";
