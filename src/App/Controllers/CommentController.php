@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Services\CommentService;
 use Core\Base\Controller;
 use Core\Database\Database;
 use Core\Helpers\Redirect;
@@ -14,18 +15,9 @@ class CommentController extends Controller{
     public function store(){
         $request = new Request();
 
-        if(!Validator::comment($request->inputs())){
-            return Redirect::back();
-        }
+        $service = CommentService::getInstance();
 
-        $db = Database::getInstance();
-
-        $stmt = $db->prepare("INSERT INTO comments (article_id, reader_id, body) VALUES (:article_id, :reader_id, :body)");
-        $status = $stmt->execute([
-            "article_id" => $request->article_id,
-            "reader_id" => session()->get("user_id"),
-            "body" => $request->content
-        ]);
+        $status = $service->create($request->all());
 
         if($status){
             Session::flash("success","Comment added successfully");
@@ -39,17 +31,9 @@ class CommentController extends Controller{
     public function update(){
         $request = new Request();
 
-        if(!Validator::comment($request->inputs())){
-            return Redirect::back();
-        }
+        $service = CommentService::getInstance();
 
-        $db = Database::getInstance();
-
-        $stmt = $db->prepare("UPDATE comments SET body = :body WHERE id = :id");
-        $status = $stmt->execute([
-            "id" => $request->id,
-            "body" => $request->content
-        ]);
+        $status = $service->update($request->id, $request->all());
 
         if($status){
             Session::flash("success","Comment updated successfully");
@@ -63,10 +47,9 @@ class CommentController extends Controller{
     public function destroy(){
         $request = new Request();
 
-        $db = Database::getInstance();
+        $service = CommentService::getInstance();
 
-        $stmt = $db->prepare("DELETE FROM comments WHERE id = :id");
-        $status = $stmt->execute(["id" => $request->id]);
+        $status = $service->delete($request->id);
 
         if($status){
             Session::flash("success","Comment deleted successfully");
