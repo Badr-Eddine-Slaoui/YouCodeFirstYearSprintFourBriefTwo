@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(30) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role user_role NOT NULL DEFAULT 'reader', 
+    role user_role NOT NULL DEFAULT 'reader',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS articles (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title VARCHAR(150) NOT NULL,
     body TEXT NOT NULL,
+    cover VARCHAR(255) DEFAULT NULL,
     author_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -38,14 +39,17 @@ CREATE TABLE IF NOT EXISTS likes (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     comment_id INT DEFAULT NULL,
     article_id INT DEFAULT NULL,
+    reader_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (reader_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS categories (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL,
+    description TEXT
 );
 
 CREATE TYPE report_reason AS ENUM ('spam', 'explicit content', 'insult', 'racist content', 'offensive', 'abuse', 'copyright', 'other');
