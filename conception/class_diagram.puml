@@ -4,36 +4,46 @@
         - last_name : string
         - email : string
         - password : string
-        - created_at : Date
+        - created_at : DateTime
+    }
+
+    enum UserRole{
+        ADMIN,
+        AUTHOR,
+        READER
     }
 
     class Reader {
-        - role : string
+        - role : UserRole
     }
 
     class Author {
-        - role : string
+        - role : UserRole
     }
 
     class Admin {
-        - role : string
+        - role : UserRole
     }
 
 
     class Article {
         - title : string
-        - body : text
-        - created_at: Date
+        - content : text
+        - cover : string
+        - created_at: DateTime
+        - likes_count : int
+        - comments_count : int
     }
 
 
     class Comment {
         - body : text
-        - created_at : Date
+        - created_at : DateTime
     }
 
     class Like {
-        - created_at : Date
+        - created_at : DateTime
+        - likes_count : int
     }
 
     interface Likable {
@@ -41,6 +51,8 @@
 
     class Category {
         - name : string
+        - description: text
+        - articles_count : int
     }
 
     interface Reportable {
@@ -65,6 +77,10 @@
     User <|--- Reader
     User <|--- Admin
     User <|--- Author
+
+    Reader -- UserRole
+    Admin -- UserRole
+    Author -- UserRole
 
     Likable <|.. Article
     Likable <|.. Comment
