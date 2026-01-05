@@ -15,6 +15,7 @@ erDiagram
         int id
         string title
         text body
+        string cover
         date created_at
         int author_id FK
     }
@@ -38,6 +39,7 @@ erDiagram
     Category {
         int id PK
         string name
+        text description
     }
 
     Report {
