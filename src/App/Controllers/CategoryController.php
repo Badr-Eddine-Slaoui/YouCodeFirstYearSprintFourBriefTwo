@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Category;
+use App\Services\CategoryService;
 use Core\Base\Controller;
 use Core\Database\Database;
 use Core\Helpers\Redirect;
@@ -14,38 +15,33 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $db = Database::getInstance();
-        $data = $db->query("SELECT c.*, COUNT(a.id) as article_count FROM categories c LEFT JOIN article_category a ON c.id = a.category_id GROUP BY c.id ORDER BY c.id DESC")->fetchAll();
-        $categories = [];
-        foreach ($data as $row) {
-            $categories[] = new Category($row['id'], $row['name'], $row['description'], $row['article_count']);
+        $service = CategoryService::getInstance();
+
+        $categories = $service->getCategoriesWithArticleCount();
+        $categories_count = count($categories);
+        $unused_categories_count = $service->getUnusedCategoriesCount();
+        $most_used_category_name = $service->getMostUsedCategoryName();
+
+        if($categories && $most_used_category_name){
+            return $this->view('admin.categories.index', compact('categories', 'categories_count', 'unused_categories_count', 'most_used_category_name'),'admin');
         }
 
-        $categories_count = count($categories);
-
-        $unused_categories_count = $db->query('SELECT COUNT(id) FROM categories WHERE id NOT IN (SELECT category_id FROM article_category)')->fetchColumn();
-
-        $most_used_category_name = $db->query('SELECT c.name, COUNT(a.id) as article_count FROM categories c LEFT JOIN article_category a ON c.id = a.category_id GROUP BY c.id ORDER BY article_count DESC LIMIT 1')->fetchColumn();
-
-        $this->view('admin.categories.index', compact('categories', 'categories_count', 'unused_categories_count', 'most_used_category_name'),'admin');
+        Session::set("error","Something went wrong, try again later");
+        return Redirect::back();
     }
 
     public function create()
     {
-        $this->view('admin.categories.create', layout: 'admin');
+        return $this->view('admin.categories.create', layout: 'admin');
     }
 
     public function store()
     {
         $request = new Request() ;
 
-        if(!Validator::category($request->inputs())){
-            return Redirect::back();
-        }
+        $service = CategoryService::getInstance();
 
-        $db = Database::getInstance();
-        $stmt = $db->prepare("INSERT INTO categories (name, description) VALUES (:name, :description)");
-        $status = $stmt->execute(["name" => $request->name, "description"=> $request->description]);
+        $status = $service->create($request->inputs());
         
         if($status){
             Session::flash("success","Category created successfully");
@@ -60,14 +56,12 @@ class CategoryController extends Controller
     {
         $request = new Request();
 
-        $db = Database::getInstance();
+        $service = CategoryService::getInstance();
 
-        $stmt = $db->prepare("SELECT * FROM categories WHERE id = :id");
-        $status = $stmt->execute(["id" => $request->id]);
-        if($status){
-            $data = $stmt->fetch();
-            $category = new Category($data['id'], $data['name'], $data['description']);
-            $this->view('admin.categories.edit', compact('category'), layout: 'admin');
+        $category = $service->getCategory($request->id);
+
+        if($category){
+            return $this->view('admin.categories.edit', compact('category'), layout: 'admin');
         }
 
         Session::flash('error','Something went wrong, try again later');
@@ -78,13 +72,9 @@ class CategoryController extends Controller
     {
         $request = new Request();
 
-        if(!Validator::category($request->inputs())){
-            return Redirect::back();
-        }
+        $service = CategoryService::getInstance();
 
-        $db = Database::getInstance();
-        $stmt = $db->prepare("UPDATE categories SET name = :name, description = :description WHERE id = :id");
-        $status = $stmt->execute(["name" => $request->name, "description" => $request->description, "id" => $request->id]);
+        $status = $service->update($request->id, $request->inputs());
 
         if($status){
             Session::flash("success","Category updated successfully");
@@ -99,9 +89,9 @@ class CategoryController extends Controller
     {
         $request = new Request();
 
-        $db = Database::getInstance();
-        $stmt = $db->prepare("DELETE FROM categories WHERE id = :id");
-        $status = $stmt->execute(["id" => $request->id]);
+        $service = CategoryService::getInstance();
+
+        $status = $service->delete($request->id);
 
         if($status){
             Session::flash("success","Category deleted successfully");
