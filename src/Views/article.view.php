@@ -1,4 +1,3 @@
-<?php use App\Models\Like; ?>
 <main class="flex-grow w-full max-w-[900px] mx-auto px-4 py-8 sm:px-6 lg:px-8">
     <!-- Article Card -->
     <article class="bg-content-surface rounded-2xl shadow-sm border border-white/50 overflow-hidden">
@@ -34,17 +33,14 @@
                     </div>
                     <div class="flex flex-col">
                         <span
-                            class="text-text-main font-bold text-lg leading-tight"><?= ucwords($article->author()->getFullName()) ?></span>
+                            class="text-text-main font-bold text-lg leading-tight"><?= ucwords($article->author->getFullName()) ?></span>
                         <span class="text-text-muted text-sm font-medium"><?= $article->created_at->format('F j, Y') ?>
                             • <?= diffForHuman($article->created_at) ?></span>
                     </div>
                 </div>
-                <?php
-                    $is_liked = Like::is_liked_by(session()->get('user_id'), $article->id);
-                ?>
                 <!-- Article Actions (Top) -->
                 <div class="flex items-center gap-2">
-                    <?php if ($is_liked): ?>
+                    <?php if ($article->is_liked_by_current_user): ?>
                         <form action="<?= route('reader.articles.unlike') ?>" method="post">
                             <input type="hidden" name="article_id" value="<?= $article->id ?>">
                             <button type="submit"
@@ -86,7 +82,7 @@
                     <span class="text-text-muted font-medium">Likes</span>
                 </button>
                 <div class="flex gap-3">
-                    <?php if ($is_liked): ?>
+                    <?php if ($article->is_liked_by_current_user): ?>
                         <form action="<?= route('reader.articles.unlike') ?>" method="post">
                             <input type="hidden" name="article_id" value="<?= $article->id ?>">
                             <button
@@ -149,11 +145,8 @@
         </form>
         <!-- Comment List -->
         <div class="flex flex-col gap-8">
-            <?php if (count($article->comments()) > 0): ?>
-                <?php foreach ($article->comments() as $comment): ?>
-                    <?php
-                        $is_comment_liked = Like::is_liked_by(session()->get('user_id'), $comment->id);
-                    ?>
+            <?php if (count($article->comments) > 0): ?>
+                <?php foreach ($article->comments as $comment): ?>
                     <?php if ($comment->reader_id !== session()->get('user_id')): ?>
                         <div class="group flex gap-4">
                             <div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 shrink-0 bg-gray-200"
@@ -164,7 +157,7 @@
                                 <div class="flex items-center justify-between mb-1">
                                     <div class="flex items-center gap-2">
                                         <span
-                                            class="font-bold text-text-main"><?= ucwords($comment->reader()->getFullName()) ?></span>
+                                            class="font-bold text-text-main"><?= ucwords($comment->reader->getFullName()) ?></span>
                                         <?php if ($article->author_id === $comment->reader_id): ?>
                                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary text-black">AUTHOR</span>
                                         <?php endif; ?>
@@ -175,7 +168,7 @@
                                     <?= $comment->body ?>
                                 </div>
                                 <div class="flex items-center gap-4">
-                                    <?php if ($is_comment_liked): ?>
+                                    <?php if ($comment->is_liked_by_current_user): ?>
                                         <form action="<?= route('reader.comments.unlike') ?>" method="post">
                                             <input type="hidden" name="comment_id" value="<?= $comment->id ?>">
                                             <button type="submit"
@@ -238,7 +231,7 @@
                                     <?= $comment->body ?>
                                 </div>
                                 <div class="flex items-center gap-4">
-                                    <?php if ($is_comment_liked): ?>
+                                    <?php if ($comment->is_liked_by_current_user): ?>
                                         <form action="<?= route('reader.comments.unlike') ?>" method="post">
                                             <input type="hidden" name="comment_id" value="<?= $comment->id ?>">
                                             <button type="submit"
