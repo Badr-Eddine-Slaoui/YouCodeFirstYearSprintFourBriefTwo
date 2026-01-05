@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Interfaces\Likable;
 use Core\Database\Database;
 use DateTime;
 
-class Comment implements Likable{
+class Comment{
     private int $id;
     private int $article_id;
     private int $reader_id;
@@ -27,37 +26,5 @@ class Comment implements Likable{
     {
         return $this->{$name} ?? null;
     }
-
-    public function reader(){
-        $db = Database::getInstance();
-
-        $stmt = $db->prepare("SELECT * FROM users WHERE id = :id");
-        $status = $stmt->execute(["id" => $this->reader_id]);
-
-        if($status){
-            $data = $stmt->fetch();
-            return new Author($data['first_name'], $data['last_name'], $data['email'], $data['password'], $data['created_at']);
-        }
-
-        return null;
-    }
-
-    public static function like(int $comment_id): bool{
-        $db = Database::getInstance();
-
-        $stmt = $db->prepare("INSERT INTO likes (reader_id, comment_id) VALUES (:reader_id, :comment_id)");
-        return $stmt->execute([
-            "reader_id" => session()->get("user_id"),
-            "comment_id" => $comment_id
-        ]);
-    }
     
-    public static function unlike(int $comment_id): bool{
-        $db = Database::getInstance();
-        $stmt = $db->prepare("DELETE FROM likes WHERE reader_id = :reader_id AND comment_id = :comment_id");
-        return $stmt->execute([
-            "reader_id" => session()->get("user_id"),
-            "comment_id" => $comment_id
-        ]);
-    }
 }
