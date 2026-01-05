@@ -95,7 +95,7 @@
                             <img alt="Avatar" class="w-6 h-6 rounded-full object-cover" data-alt="Portrait of male author"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaQPkPgomEDR77_hm8vKXxx37BUgiHrzDIYszYk1xjILGUeKgAG2YzbeW4kODYPSSTSeSCQnQ85FmeBwNG8BhCLxTkjc0A0BMbsV8kDiQ3RRCVtt0xgtnc27BBHW7BURP_9E1r0gPQJiTgBOG6l_wKS2PJGIGV9QpsYh9Xr-B61OCjQ29pG8gjz4UpraNXnGXHEBdXSaafY5W84XnirrEHFtMK0E4VdkXC9SEH7vjF0c1nFdBSMYVXHT5hzd5L0ksVR7Q5OOlYNsk" />
                             <span
-                                class="text-xs font-semibold text-text-muted uppercase tracking-wide"><?= ucwords($article->author()->getFullName()) ?></span>
+                                class="text-xs font-semibold text-text-muted uppercase tracking-wide"><?= ucwords($article->author->getFullName()) ?></span>
                         </div>
                         <span class="text-xs text-text-muted"><?= diffForHuman($article->created_at) ?></span>
                     </div>
