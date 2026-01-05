@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Models\Article;
 use App\Models\Comment;
+use App\Models\Like;
+use App\Services\LikeService;
 use Core\Base\Controller;
 use Core\Database\Database;
 use Core\Helpers\Redirect;
@@ -15,7 +17,9 @@ class LikeController extends Controller{
     public function like_article(){
         $request = new Request();
 
-        if(Article::like($request->article_id)){
+        $service = LikeService::getInstance();
+
+        if($service->likeArticle($request->article_id, session()->get('user_id'))){
             Session::flash("success","Article liked successfully");
             return Redirect::back();
         }
@@ -27,7 +31,9 @@ class LikeController extends Controller{
     public function unlike_article(){
         $request = new Request();
 
-        if(Article::unlike($request->article_id)){
+        $service = LikeService::getInstance();
+
+        if($service->unlikeArticle($request->article_id, session()->get('user_id'))){
             Session::flash("success","Article unliked successfully");
             return Redirect::back();
         }
@@ -39,7 +45,9 @@ class LikeController extends Controller{
     public function like_comment(){
         $request = new Request();
 
-        if(Comment::like($request->comment_id)){
+        $service = LikeService::getInstance();
+
+        if($service->likeComment($request->comment_id, session()->get('user_id'))){
             Session::flash("success","Comment liked successfully");
             return Redirect::back();
         }
@@ -51,7 +59,9 @@ class LikeController extends Controller{
     public function unlike_comment(){
         $request = new Request();
 
-        if(Comment::unlike($request->comment_id)){
+        $service = LikeService::getInstance();
+
+        if($service->unlikeComment($request->comment_id, session()->get('user_id'))){
             Session::flash("success","Comment unliked successfully");
             return Redirect::back();
         }
