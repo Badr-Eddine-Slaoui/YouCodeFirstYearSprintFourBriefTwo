@@ -8,6 +8,6 @@ class AuthorController extends Controller
 {
     public function index()
     {
-        $this->view('author.index', layout: 'author');
+        return $this->view('author.index', layout: 'author');
     }
 }
