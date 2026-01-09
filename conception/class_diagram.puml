@@ -46,16 +46,10 @@
         - likes_count : int
     }
 
-    interface Likable {
-    }
-
     class Category {
         - name : string
         - description: text
         - articles_count : int
-    }
-
-    interface Reportable {
     }
 
     class Report {
@@ -82,23 +76,19 @@
     Admin -- UserRole
     Author -- UserRole
 
-    Likable <|.. Article
-    Likable <|.. Comment
-
-    Reportable <|.. Article
-    Reportable <|.. Comment
-
 
     Article "0..*" -- "1..1" Author : belongs to >
     Article "0..*" -- "*..*" Category : belongs to many >
     (Article, Category) .. ArticleCategory
     Comment "0..*" -- "1..1" Reader : belongs to >
     Comment "0..*" -- "1..1" Article : has <
-    Reader "1..1" -- "0..*" Like : creates
-    Like "0..*" -- "1..1" Likable : targets
-    Reader "1..1" -- "0..*" Report : creates
-    Report "0..*" -- "1..1" Reportable : targets
     Report -- ReportReason
+    Reader "1" --> "0..*" Like : creates
+    Like "0..*" --> "1" Article : targets (if article_id not null)
+    Like "0..*" --> "1" Comment : targets (if comment_id not null)
+    Reader "1" --> "0..*" Report : creates
+    Report "0..*" --> "1" Article : targets (if article_id not null)
+    Report "0..*" --> "1" Comment : targets (if comment_id not null)
 
 
 @endumlb
