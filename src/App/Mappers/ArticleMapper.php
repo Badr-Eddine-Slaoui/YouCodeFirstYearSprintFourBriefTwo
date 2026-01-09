@@ -29,8 +29,8 @@ class ArticleMapper{
             $row['author_id'],
             $categories,
             $row['created_at'],
-            $row['likes_count'],
-            $row['comments_count']
+            $row['likes_count'] ?? 0,
+            $row['comments_count'] ?? 0
         );
     }
 
@@ -45,9 +45,10 @@ class ArticleMapper{
             $row['created_at'],
             $comments,
             $author,
-            $row['is_liked_by_current_user'],
-            $row['likes_count'],
-            $row['comments_count']
+            $row['is_liked_by_current_user'] ?? false, 
+            $row['is_reported_by_current_user'] ?? false,
+            $row['likes_count'] ?? 0,
+            $row['comments_count'] ?? 0
         );
     }
 }
