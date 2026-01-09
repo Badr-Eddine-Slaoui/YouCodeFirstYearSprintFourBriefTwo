@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Interfaces\Likable;
-use Core\Database\Database;
 use DateTime;
 
 class Article {
