@@ -15,7 +15,7 @@
                 <ol class="flex items-center gap-2">
                     <li>
                         <a class="text-sm font-medium text-text-secondary hover:text-primary dark:text-gray-400"
-                            href="<?= route('author.dashboard') ?>">Home</a>
+                            href="<?= route('home') ?>">Home</a>
                     </li>
                     <li>
                         <span class="text-text-secondary/50 dark:text-gray-600">/</span>
