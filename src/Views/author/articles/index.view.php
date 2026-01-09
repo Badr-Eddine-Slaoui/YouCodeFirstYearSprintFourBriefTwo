@@ -10,7 +10,7 @@
                 <ol class="flex items-center gap-2">
                     <li>
                         <a class="text-sm font-medium text-text-secondary hover:text-primary dark:text-gray-400"
-                            href="#">Home</a>
+                            href="<?= route('home') ?>">Home</a>
                     </li>
                     <li>
                         <span class="text-text-secondary/50 dark:text-gray-600">/</span>
@@ -34,74 +34,6 @@
     </header>
     <div class="flex-1 overflow-y-auto p-6 scroll-smooth">
         <div class="mx-auto max-w-7xl flex flex-col gap-6">
-            <div class="flex flex-col gap-6">
-                <div class="flex flex-col gap-1">
-                    <h2 class="text-2xl font-bold text-text-main dark:text-white">My Articles</h2>
-                    <p class="text-sm text-text-secondary dark:text-gray-400">Manage your stories, drafts, and
-                        publication status.</p>
-                </div>
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div
-                        class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-background-card dark:bg-[#1a261d] p-5 shadow-soft transition-all hover:-translate-y-1 hover:shadow-lg border-l-4 border-primary">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-text-secondary dark:text-gray-400">Published
-                                </p>
-                                <h3 class="mt-2 text-3xl font-bold text-text-main dark:text-white">24</h3>
-                            </div>
-                            <div
-                                class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-50 text-primary dark:bg-green-900/20 dark:text-green-400">
-                                <span class="material-symbols-outlined">check_circle</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-background-card dark:bg-[#1a261d] p-5 shadow-soft transition-all hover:-translate-y-1 hover:shadow-lg">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-text-secondary dark:text-gray-400">Drafts</p>
-                                <h3 class="mt-2 text-3xl font-bold text-text-main dark:text-white">3</h3>
-                            </div>
-                            <div
-                                class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-                                <span class="material-symbols-outlined">edit_document</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-background-card dark:bg-[#1a261d] p-5 shadow-soft transition-all hover:-translate-y-1 hover:shadow-lg">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-text-secondary dark:text-gray-400">Total
-                                    Views</p>
-                                <h3 class="mt-2 text-3xl font-bold text-text-main dark:text-white">48.2k</h3>
-                            </div>
-                            <div
-                                class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
-                                <span class="material-symbols-outlined">visibility</span>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex items-center gap-1 text-xs font-medium text-primary">
-                            <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                            <span>+1.2k this week</span>
-                        </div>
-                    </div>
-                    <div
-                        class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-background-card dark:bg-[#1a261d] p-5 shadow-soft transition-all hover:-translate-y-1 hover:shadow-lg">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-text-secondary dark:text-gray-400">Reader
-                                    Comments</p>
-                                <h3 class="mt-2 text-3xl font-bold text-text-main dark:text-white">342</h3>
-                            </div>
-                            <div
-                                class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400">
-                                <span class="material-symbols-outlined">forum</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <?php if (count($articles) > 0): ?>
                 <div class="flex flex-col rounded-xl bg-background-card dark:bg-[#1a261d] shadow-soft overflow-hidden">
                     <div
