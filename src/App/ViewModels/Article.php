@@ -18,9 +18,10 @@ class Article {
     private array $comments;
     private Author $author;
     private bool $is_liked_by_current_user;
+    private bool $is_reported_by_current_user;
 
 
-    public function __construct(int $id, string $title, string $content, string $cover, int $author_id, array $categories, string $created_at, array $comments, Author $author, bool $is_liked_by_current_user, int $likes_count = 0, int $comments_count = 0){
+    public function __construct(int $id, string $title, string $content, string $cover, int $author_id, array $categories, string $created_at, array $comments, Author $author, bool $is_liked_by_current_user = false, bool $is_reported_by_current_user = false, int $likes_count = 0, int $comments_count = 0){
         $this->id = $id;
         $this->title = $title;
         $this->content = $content;
@@ -31,6 +32,7 @@ class Article {
         $this->comments = $comments;
         $this->author = $author;
         $this->is_liked_by_current_user = $is_liked_by_current_user;
+        $this->is_reported_by_current_user = $is_reported_by_current_user;
         $this->likes_count = $likes_count;
         $this->comments_count = $comments_count;
     }
