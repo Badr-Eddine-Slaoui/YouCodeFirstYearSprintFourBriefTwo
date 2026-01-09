@@ -2,12 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\Article;
-use App\Models\Comment;
-use App\Models\Like;
 use App\Services\LikeService;
 use Core\Base\Controller;
-use Core\Database\Database;
 use Core\Helpers\Redirect;
 use Core\Helpers\Request;
 use Core\Helpers\Session;
