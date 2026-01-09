@@ -54,14 +54,19 @@ CREATE TABLE IF NOT EXISTS categories (
 
 CREATE TYPE report_reason AS ENUM ('spam', 'explicit content', 'insult', 'racist content', 'offensive', 'abuse', 'copyright', 'other');
 
+CREATE TYPE report_status AS ENUM ('pending', 'resolved');
+
 CREATE TABLE IF NOT EXISTS reports (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     message report_reason NOT NULL DEFAULT 'other',
+    status report_status NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     comment_id INT DEFAULT NULL,
     article_id INT DEFAULT NULL,
+    reader_id INT NOT NULL,
     FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (reader_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS article_category (
