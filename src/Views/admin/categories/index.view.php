@@ -98,7 +98,7 @@
                                         </td>
                                         <td class="p-4 text-right pr-6">
                                             <div
-                                                class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                class="flex items-center justify-end gap-2 ">
                                                 <a href="<?= route('admin.categories.edit') ?>?id=<?= $category->id ?>"
                                                     class="rounded-lg p-1.5 text-[#5b8b66] hover:bg-[#e9f1eb] dark:hover:bg-[#2a362c] hover:text-primary transition-colors"
                                                     title="Edit">
