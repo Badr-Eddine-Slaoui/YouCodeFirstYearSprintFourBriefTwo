@@ -30,6 +30,21 @@ class ArticleService{
         return $articleRepository->findByAuthor($author_id);
     }
 
+    public function getAuthorMostInteractedArticle(int $author_id): ?Article{
+        $articleRepository = ArticleRepository::getInstance();
+        return $articleRepository->findAuthorMostInteractedArticle($author_id);
+    }
+
+    public function getAuthorMostCommentedArticle(int $author_id): ?Article{
+        $articleRepository = ArticleRepository::getInstance();
+        return $articleRepository->findAuthorMostCommentedArticle($author_id);
+    }
+
+    public function getAuthorArticlesCount(int $author_id): ?int{
+        $articleRepository = ArticleRepository::getInstance();
+        return $articleRepository->getAuthorArticlesCount($author_id);
+    }
+
     public function getArticle(int $id): ?Article{
         $articleRepository = ArticleRepository::getInstance();
         return $articleRepository->findById($id);
