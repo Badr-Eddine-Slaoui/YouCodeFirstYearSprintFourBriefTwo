@@ -2,12 +2,60 @@
 
 namespace App\Controllers;
 
+use App\Services\ArticleService;
+use App\Services\AuthorService;
+use App\Services\CommentService;
+use App\Services\LikeService;
 use Core\Base\Controller;
+use Core\Helpers\Redirect;
+use Core\Helpers\Session;
 
 class AuthorController extends Controller
 {
     public function index()
     {
-        return $this->view('author.index', layout: 'author');
+        $articleServise = ArticleService::getInstance();
+        $commentServise = CommentService::getInstance();
+        $likeServise = LikeService::getInstance();
+        $authorServise = AuthorService::getInstance();
+
+        $id = session()->get("user_id");
+
+        $totalLikes = $likeServise->getAuthorLikesCount($id);
+        $totalComments = $commentServise->getAuthorCommentsCount($id);
+        $totalArticles = $articleServise->getAuthorArticlesCount($id);
+
+        $topPerformerArticle = $articleServise->getAuthorMostInteractedArticle($id);
+        $topCommentedArticle = $articleServise->getAuthorMostCommentedArticle($id);
+        $dailyAvgLikes = $likeServise->getAuthorDailyAvgLikesCount($id);
+        $dailyAvgComments = $commentServise->getAuthorDailyCommentsCount($id);
+
+        $interactions = $authorServise->getInteractions($id);
+
+        return $this->view('author.index', compact('totalLikes', 'totalComments', 'totalArticles', 'topPerformerArticle', 'topCommentedArticle', 'dailyAvgLikes', 'dailyAvgComments', 'interactions'), 'author');
+    }
+
+    public function comments(){
+        $service = CommentService::getInstance();
+        $comments = $service->getByAuthor(session()->get('user_id'));
+
+        if($comments){
+            return $this->view('author.comments.index', compact('comments'), 'author');
+        }
+        
+        Session::flash("error","Something went wrong, try again later");
+        return Redirect::back();
+    }
+
+    public function likes(){
+        $service = LikeService::getInstance();
+        $likes = $service->getByAuthor(session()->get('user_id'));
+
+        if($likes){
+            return $this->view('author.likes.index', compact('likes'), 'author');
+        }
+        
+        Session::flash("error","Something went wrong, try again later");
+        return Redirect::back();
     }
 }
