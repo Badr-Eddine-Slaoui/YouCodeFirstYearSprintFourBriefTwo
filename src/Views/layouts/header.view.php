@@ -1,12 +1,13 @@
+<?php $page = page(); ?>
 <header class="sticky top-0 z-50 w-full bg-card-bg/90 backdrop-blur-sm border-b border-[#cde2cf] px-6 py-3 shadow-sm">
     <div class="max-w-[1280px] mx-auto flex items-center justify-between gap-6">
         <!-- Logo -->
-        <div class="flex items-center gap-3 text-text-main shrink-0">
+        <a href="<?= route('home') ?>" class="flex items-center gap-3 text-text-main shrink-0">
             <div class="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
                 <span class="material-symbols-outlined" style="font-size: 24px;">auto_stories</span>
             </div>
             <h2 class="text-xl font-bold tracking-tight">BlogReader</h2>
-        </div>
+        </a>
         <!-- Search Bar (Hidden on mobile, visible on tablet+) -->
         <div class="hidden md:flex flex-1 max-w-md">
             <label class="relative w-full group">
@@ -21,6 +22,12 @@
         <!-- Right Actions -->
         <div class="flex items-center gap-4 shrink-0">
             <?php if(auth()->check()): ?>
+                <?php if(auth()->user()->role() == 'author'): ?>
+                    <a href="<?= route('author.dashboard') ?>" class="flex items-center gap-3 pr-2 border-r border-[#cde2cf]">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">dashboard</span>
+                        <span class="hidden sm:block">Dashboard</span>
+                    </a>
+                <?php endif; ?>
                 <a class="flex items-center gap-3 pr-2 border-r border-[#cde2cf]">
                     <div class="text-right hidden sm:block">
                         <p class="text-sm font-bold leading-none"><?=  ucwords(auth()->user()->getFullName()) ?></p>
