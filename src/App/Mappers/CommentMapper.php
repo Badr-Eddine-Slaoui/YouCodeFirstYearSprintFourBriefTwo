@@ -3,7 +3,6 @@
 namespace App\Mappers;
 
 use App\Models\Comment;
-use App\Models\Reader;
 use App\ViewModels\Comment as ViewModelsComment;
 
 class CommentMapper
@@ -47,7 +46,9 @@ class CommentMapper
                 $comment['body'],
                 $comment['created_at'],
                 $comment['reader'],
-                $comment['is_liked_by_current_user'],
+                $comment['article'],
+                $comment['is_liked_by_current_user'] ?? false,
+                $comment['is_reported_by_current_user'] ?? false,
                 $comment['likes_count'] ?? 0
             ),
             $comments
