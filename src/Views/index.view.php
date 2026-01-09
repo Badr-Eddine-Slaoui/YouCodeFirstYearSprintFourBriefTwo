@@ -81,13 +81,6 @@
                         data-alt="Close up of code on a computer screen"
                         style='background-image: url("http://localhost:8080<?= $article->cover ?>");'>
                     </div>
-                    <div class="absolute top-3 right-3">
-                        <button
-                            class="p-1.5 bg-white/90 backdrop-blur rounded-full text-gray-400 hover:text-red-500 transition-colors shadow-sm"
-                            title="Report Article">
-                            <span class="material-symbols-outlined block" style="font-size: 18px;">flag</span>
-                        </button>
-                    </div>
                 </div>
                 <div class="p-5 flex flex-col flex-1">
                     <div class="flex items-center justify-between mb-3">
