@@ -64,11 +64,21 @@
                         title="Share Article">
                         <span class="material-symbols-outlined text-[20px]">ios_share</span>
                     </button>
-                    <button
-                        class="group flex items-center justify-center h-10 w-10 rounded-full bg-[#e7f3eb] hover:bg-gray-200 transition-colors"
-                        title="Report Article">
-                        <span class="material-symbols-outlined text-[20px]">flag</span>
-                    </button>
+                    <?php if (!$article->is_reported_by_current_user): ?>
+                        <button onclick="report('article', <?= $article->id ?>)"
+                            class="group flex items-center justify-center h-10 w-10 rounded-full bg-[#e7f3eb] hover:bg-gray-200 transition-colors"
+                            title="Report Article">
+                            <span class="material-symbols-outlined text-[20px]">flag</span>
+                        </button>
+                    <?php else: ?> 
+                        <form action="<?= route('report.article.destroy') ?>" method="post">
+                            <input type="hidden" name="article_id" value="<?= $article->id ?>">
+                            <button type="submit"
+                                class="group flex items-center justify-center h-10 w-10 rounded-full  bg-red-50 hover:bg-[#e7f3eb] text-red-500 hover:text-black transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">flag</span>
+                            </button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
             <!-- Article Body -->
@@ -101,11 +111,22 @@
                             </button>
                         </form>
                     <?php endif; ?>
-                    <button
-                        class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#e7f3eb] text-text-main font-medium hover:bg-gray-200 transition-all">
-                        <span class="material-symbols-outlined text-[20px]">flag</span>
-                        Report
-                    </button>
+                    <?php if (!$article->is_reported_by_current_user): ?>
+                        <button onclick="report('article', <?= $article->id ?>)"
+                            class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#e7f3eb] text-text-main font-medium hover:bg-gray-200 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">flag</span>
+                            Report
+                        </button>
+                    <?php else: ?>
+                        <form action="<?= route('report.article.destroy') ?>" method="post">
+                            <input type="hidden" name="article_id" value="<?= $article->id ?>">
+                            <button type="submit"
+                                class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#e7f3eb] text-red-500 font-medium hover:bg-gray-200 transition-all">
+                                <span class="material-symbols-outlined text-[20px]">flag</span>
+                                Reported
+                            </button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -187,11 +208,22 @@
                                             </button>
                                         </form>
                                     <?php endif; ?>
-                                    <button
-                                        class="flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-red-500 transition-colors">
-                                        <span class="material-symbols-outlined text-[16px]">flag</span>
-                                        Report
-                                    </button>
+                                    <?php if (!$comment->is_reported_by_current_user): ?>
+                                        <button onclick="report('comment', <?= $comment->id ?>)"
+                                            class="flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-red-500 transition-colors">
+                                            <span class="material-symbols-outlined text-[16px]">flag</span>
+                                            Report
+                                        </button>
+                                    <?php else: ?>
+                                        <form action="<?= route('report.comment.destroy') ?>" method="post">
+                                            <input type="hidden" name="comment_id" value="<?= $comment->id ?>">
+                                            <button type="submit"
+                                                class="flex items-center gap-1.5 text-xs font-medium text-red-500 transition-colors">
+                                                <span class="material-symbols-outlined text-[16px]">flag</span>
+                                                Report
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -284,8 +316,8 @@
                             </div>
                         </form>
                     <?php endif; ?>
-                <? endforeach; ?>
-            <? else: ?>
+                <?php endforeach; ?>
+            <?php else: ?>
                 <div
                     class="flex flex-col items-center justify-center py-12 px-4 rounded-xl border-2 border-dashed border-[#e7f3eb] bg-[#f8fcf9]">
                     <div class="w-20 h-20 bg-[#e7f3eb] rounded-full flex items-center justify-center mb-4 shadow-sm">
@@ -302,10 +334,103 @@
                             class="material-symbols-outlined text-sm transition-transform group-hover:-translate-y-1">arrow_upward</span>
                     </a>
                 </div>
-            <? endif; ?>
+            <?php endif; ?>
         </div>
     </section>
 </main>
+
+<div id="report-modal" aria-labelledby="modal-title" aria-modal="true"
+    class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 hidden" role="dialog">
+    <div class="absolute inset-0 bg-[#0d1b12]/60 backdrop-blur-sm transition-opacity"></div>
+    <form method="post"
+        class="relative w-full max-w-[480px] transform overflow-hidden rounded-2xl bg-content-surface p-6 sm:p-8 text-left shadow-2xl transition-all border border-[#e7f3eb]">
+        <button onclick="closeReportModal()" type="button"
+            class="absolute top-4 right-4 p-2 rounded-full text-text-muted hover:bg-[#e7f3eb] hover:text-text-main transition-colors">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+        <div class="mb-6">
+            <div class="flex items-center gap-3 mb-2 text-red-500">
+                <span class="material-symbols-outlined text-[28px]">report</span>
+                <h3 class="text-2xl font-bold text-text-main" id="modal-title">Report Content</h3>
+            </div>
+            <p class="text-text-muted">
+                Please select a reason for reporting this content. This helps our moderators understand the issue.
+            </p>
+        </div>
+        <div class="space-y-3 mb-8">
+            <input type="hidden" id="target_id" name="" value="">
+            <label
+                class="flex items-center p-3.5 border border-[#e7f3eb] rounded-xl cursor-pointer hover:bg-[#e7f3eb]/50 hover:border-primary/30 transition-all group">
+                <input
+                    class="h-5 w-5 border-2 border-gray-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                    name="report_reason" type="radio" value="spam" />
+                <span class="ml-3 font-medium text-text-main group-hover:text-primary transition-colors">Spam</span>
+            </label>
+            <label
+                class="flex items-center p-3.5 border border-[#e7f3eb] rounded-xl cursor-pointer hover:bg-[#e7f3eb]/50 hover:border-primary/30 transition-all group">
+                <input
+                    class="h-5 w-5 border-2 border-gray-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                    name="report_reason" type="radio" value="explicit content" />
+                <span class="ml-3 font-medium text-text-main group-hover:text-primary transition-colors">Explicit
+                    Content</span>
+            </label>
+            <label
+                class="flex items-center p-3.5 border border-[#e7f3eb] rounded-xl cursor-pointer hover:bg-[#e7f3eb]/50 hover:border-primary/30 transition-all group">
+                <input
+                    class="h-5 w-5 border-2 border-gray-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                    name="report_reason" type="radio" value="insult" />
+                <span class="ml-3 font-medium text-text-main group-hover:text-primary transition-colors">Insult</span>
+            </label>
+            <label
+                class="flex items-center p-3.5 border border-[#e7f3eb] rounded-xl cursor-pointer hover:bg-[#e7f3eb]/50 hover:border-primary/30 transition-all group">
+                <input
+                    class="h-5 w-5 border-2 border-gray-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                    name="report_reason" type="radio" value="racist content" />
+                <span class="ml-3 font-medium text-text-main group-hover:text-primary transition-colors">Racist
+                    Content</span>
+            </label>
+            <label
+                class="flex items-center p-3.5 border border-[#e7f3eb] rounded-xl cursor-pointer hover:bg-[#e7f3eb]/50 hover:border-primary/30 transition-all group">
+                <input
+                    class="h-5 w-5 border-2 border-gray-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                    name="report_reason" type="radio" value="offensive" />
+                <span class="ml-3 font-medium text-text-main group-hover:text-primary transition-colors">Offensive</span>
+            </label>
+            <label
+                class="flex items-center p-3.5 border border-[#e7f3eb] rounded-xl cursor-pointer hover:bg-[#e7f3eb]/50 hover:border-primary/30 transition-all group">
+                <input
+                    class="h-5 w-5 border-2 border-gray-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                    name="report_reason" type="radio" value="abuse" />
+                <span class="ml-3 font-medium text-text-main group-hover:text-primary transition-colors">Abuse</span>
+            </label>
+            <label
+                class="flex items-center p-3.5 border border-[#e7f3eb] rounded-xl cursor-pointer hover:bg-[#e7f3eb]/50 hover:border-primary/30 transition-all group">
+                <input
+                    class="h-5 w-5 border-2 border-gray-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                    name="report_reason" type="radio" value="copyright" />
+                <span class="ml-3 font-medium text-text-main group-hover:text-primary transition-colors">Copyright
+                    Violation</span>
+            </label>
+            <label
+                class="flex items-center p-3.5 border border-[#e7f3eb] rounded-xl cursor-pointer hover:bg-[#e7f3eb]/50 hover:border-primary/30 transition-all group">
+                <input
+                    class="h-5 w-5 border-2 border-gray-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                    name="report_reason" type="radio" value="other" />
+                <span class="ml-3 font-medium text-text-main group-hover:text-primary transition-colors">Other</span>
+            </label>
+        </div>
+        <div class="flex gap-3 justify-end pt-2">
+            <button onclick="closeReportModal()"
+                class="px-5 py-2.5 rounded-lg border border-[#e7f3eb] text-text-main font-bold hover:bg-[#e7f3eb] transition-colors">
+                Cancel
+            </button>
+            <button type="submit"
+                class="px-5 py-2.5 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600 shadow-md shadow-red-500/20 transition-all">
+                Report
+            </button>
+        </div>
+    </form>
+</div>
 
 <script>
     function editComment(id) {
@@ -326,5 +451,19 @@
         comment.classList.remove('hidden')
         update_form.classList.add('hidden')
         comment_form.classList.remove('hidden')
+    }
+
+    function report(type, id) {
+        const report_modal = document.getElementById('report-modal')
+        const input = report_modal.querySelector('#target_id')
+        input.value = id
+        input.name = `${type}_id`
+        report_modal.classList.remove('hidden')
+        report_modal.querySelector('form').action = `/report/${type}/store`
+    }
+
+    function closeReportModal() {
+        const report_modal = document.getElementById('report-modal')
+        report_modal.classList.add('hidden')
     }
 </script>
