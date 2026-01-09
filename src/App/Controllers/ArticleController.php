@@ -2,21 +2,13 @@
 
 namespace App\Controllers;
 
-use App\DAOs\ArticleDAO;
-use App\DAOs\CategoryDAO;
-use App\Mappers\ArticleMapper;
-use App\Mappers\CategoryMapper;
-use App\Models\Article;
-use App\Models\Category;
-use App\Repositories\ArticleRepository;
+
 use App\Services\ArticleService;
 use App\Services\CategoryService;
 use Core\Base\Controller;
-use Core\Database\Database;
 use Core\Helpers\Redirect;
 use Core\Helpers\Request;
 use Core\Helpers\Session;
-use Core\Helpers\Validator;
 
 class ArticleController extends Controller
 {
