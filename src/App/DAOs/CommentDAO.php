@@ -56,6 +56,59 @@ class CommentDAO
         return null;
     }
 
+    public function getByArticleAuthor(int $articleAuthorId): ?array
+    {
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("SELECT c.*
+            FROM comments c
+            LEFT JOIN articles a ON a.id = c.article_id
+            WHERE a.author_id = :article_author_id
+            ORDER BY c.created_at DESC");
+
+        $status = $stmt->execute(['article_author_id' => $articleAuthorId]);
+
+        if ($status) {
+            return $stmt->fetchAll();
+        }
+
+        return null;
+    }
+
+    public function getAuthorCommentsCount(int $authorId): ?int{
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("SELECT COUNT(c.id) as count FROM comments c LEFT JOIN articles a ON a.id = c.article_id WHERE a.author_id = :author_id");
+
+        $status = $stmt->execute(["author_id"=> $authorId]);
+
+        if ($status) {
+            return (int) $stmt->fetchColumn();
+        }
+
+        return null;
+    }
+
+    public function getAuthorDailyCommentsCount(int $authorId): ?int{
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("SELECT COUNT(c.id) as count 
+                                    FROM comments c 
+                                    LEFT JOIN articles a 
+                                    ON a.id = c.article_id 
+                                    WHERE a.author_id = :author_id 
+                                    AND EXTRACT(WEEK FROM c.created_at) = EXTRACT(WEEK FROM CURRENT_DATE)
+                                    AND EXTRACT(YEAR FROM c.created_at) = EXTRACT(YEAR FROM CURRENT_DATE)");
+
+        $status = $stmt->execute(["author_id"=> $authorId]);
+
+        if ($status) {
+            return (int) $stmt->fetchColumn();
+        }
+
+        return null;
+    }
+
     public function insert(array $data): bool
     {
         $db = Database::getInstance();
