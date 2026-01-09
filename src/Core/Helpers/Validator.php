@@ -2,6 +2,7 @@
 
 namespace Core\Helpers;
 
+use App\Enums\ReportReason;
 use Core\Database\Database;
 
 class Validator {
@@ -147,6 +148,24 @@ class Validator {
         if(empty($data["content"])) {
             $errors["content"] = "Content is required";
             $isValid = false;
+        }
+
+        Session::flash("errors", $errors);
+        return $isValid;
+    }
+
+    public static function report(array $data){
+        $errors = [];
+        $isValid = true;
+
+        if(empty($data["message"])) {
+            $errors["message"] = "Message is required";
+            $isValid = false;
+        }else{
+            if(!ReportReason::tryFrom($data["message"])){
+                $errors["message"] = "Message is not valid";
+                $isValid = false;
+            }
         }
 
         Session::flash("errors", $errors);
