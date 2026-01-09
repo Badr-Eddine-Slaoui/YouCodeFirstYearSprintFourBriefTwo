@@ -2,11 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\Article;
-use App\Models\Category;
 use App\Services\ArticleService;
 use Core\Base\Controller;
-use Core\Database\Database;
 use Core\Helpers\Redirect;
 use Core\Helpers\Request;
 use Core\Helpers\Session;
