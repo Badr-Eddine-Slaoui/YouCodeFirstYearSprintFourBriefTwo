@@ -23,6 +23,21 @@ class CommentService{
         return $commentRepository->getAll();
     }
 
+    public static function getByAuthor(int $id){
+        $commentRepository = CommentRepository::getInstance();
+        return $commentRepository->getByArticleAuthor($id);
+    }
+
+    public function getAuthorCommentsCount(int $authorId): ?int{
+        $commentRepository = CommentRepository::getInstance();
+        return $commentRepository->getAuthorCommentsCount($authorId);
+    }
+
+    public function getAuthorDailyCommentsCount(int $authorId): ?int{
+        $commentRepository = CommentRepository::getInstance();
+        return $commentRepository->getAuthorDailyCommentsCount($authorId);
+    }
+
     public function create(array $data): bool{
 
         if(!Validator::comment($data)){
