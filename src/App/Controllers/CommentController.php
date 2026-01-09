@@ -4,11 +4,9 @@ namespace App\Controllers;
 
 use App\Services\CommentService;
 use Core\Base\Controller;
-use Core\Database\Database;
 use Core\Helpers\Redirect;
 use Core\Helpers\Request;
 use Core\Helpers\Session;
-use Core\Helpers\Validator;
 
 class CommentController extends Controller{
 
