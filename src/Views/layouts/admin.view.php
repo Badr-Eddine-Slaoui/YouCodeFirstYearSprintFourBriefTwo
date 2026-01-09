@@ -27,6 +27,13 @@
                         "text-main": "#3b4441",
                         "text-secondary": "#4a654f",
                         "background-dark": "#141e16",
+                        "card-light": "#fbfffb",
+                        "border-light": "#c8dac9",
+                        "action-green": "#428950",
+                        "background-dark": "#141e16",
+                        "border-light": "#c8dac9",
+                        "modal-bg": "#fbfffb",
+                        "modal-text": "#3b4441"
                     },
                     fontFamily: {
                         "display": ["Work Sans", "sans-serif"]
@@ -39,6 +46,7 @@
                     },
                     boxShadow: {
                         "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                        "modal": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
                     }
                 },
             },
@@ -51,6 +59,14 @@
 
         .icon-filled {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .modal-overlay {
+            background-color: rgba(16, 25, 18, 0.6);
+            backdrop-filter: blur(4px);
+            }
         }
     </style>
 </head>
