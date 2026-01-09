@@ -3,6 +3,9 @@
 namespace App\Repositories;
 
 use App\DAOs\LikeDAO;
+use App\DAOs\ReaderDAO;
+use App\Mappers\LikeMapper;
+use App\Mappers\ReaderMapper;
 
 class LikeRepository{
     private static ?LikeRepository $instance = null;
@@ -15,6 +18,39 @@ class LikeRepository{
         }
 
         return self::$instance;
+    }
+
+    public function getByArticleAuthor(int $authorId): ?array{
+        $likeDAO = LikeDAO::getInstance();
+        $readerDAO = ReaderDAO::getInstance();
+        $articleRepository = ArticleRepository::getInstance();
+        $readerMapper= ReaderMapper::getInstance();
+        $likeMapper= LikeMapper::getInstance();
+
+        $likesData = $likeDAO->getByArticleAuthor($authorId);
+
+        if($likesData){
+            foreach($likesData as $key => $like){
+                $reader = $readerDAO->findById($like['reader_id']); 
+                $like['reader'] = $readerMapper->map($reader);
+                $like['article'] = $articleRepository->findById($like['article_id']);
+                $likesData[$key] = $like;
+            }
+
+            return $likeMapper->toLikesView($likesData);
+        }
+
+        return null;
+    }
+
+    public function getAuthorLikesCount(int $authorId): ?int{
+        $likeDAO = LikeDAO::getInstance();
+        return $likeDAO->getAuthorLikesCount($authorId);
+    }
+
+    public function getAuthorDailyAvgLikesCount(int $authorId): ?int{
+        $likeDAO = LikeDAO::getInstance();
+        return $likeDAO->getAuthorDailyAvgLikesCount($authorId);
     }
 
     public function likeArticle(int $articleId, int $userId): bool
@@ -41,8 +77,8 @@ class LikeRepository{
         return $likeDAO->unlikeComment($commentId, $userId);
     }
 
-    public function isLikedBy(int $reader_id, int $target_id): bool{
+    public function isLikedBy(int $reader_id, int $target_id, string $target_type): bool{
         $likeDAO = LikeDAO::getInstance();
-        return $likeDAO->isLikedBy($reader_id, $target_id);
+        return $likeDAO->isLikedBy($reader_id, $target_id, $target_type);
     }
 }
