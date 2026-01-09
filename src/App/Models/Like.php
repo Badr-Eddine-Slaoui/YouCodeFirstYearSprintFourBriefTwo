@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Core\Database\Database;
 use DateTime;
 
 class Like{
