@@ -66,6 +66,76 @@ class ArticleDAO{
         return null;
     }
 
+    public function findAuthorMostInteractedArticle(int $authorId): ?array
+    {
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("
+            SELECT a.*, 
+            COUNT(DISTINCT l.id) AS likes_count,
+            COUNT(DISTINCT c.id) AS comments_count,
+            COUNT(DISTINCT l.id) + COUNT(DISTINCT c.id) AS interacted
+            FROM articles a
+            LEFT JOIN likes l ON a.id = l.article_id
+            LEFT JOIN comments c ON a.id = c.article_id
+            WHERE a.author_id = :author_id
+            AND EXTRACT(WEEK FROM l.created_at) = EXTRACT(WEEK FROM CURRENT_DATE)
+            AND EXTRACT(YEAR FROM l.created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            AND EXTRACT(WEEK FROM c.created_at) = EXTRACT(WEEK FROM CURRENT_DATE)
+            AND EXTRACT(YEAR FROM c.created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            GROUP BY a.id
+            ORDER BY interacted DESC
+            LIMIT 1
+        ");
+
+        $status = $stmt->execute(['author_id' => $authorId]);
+
+        if($status){
+            return $stmt->fetch();
+        }
+
+        return null;
+    }
+
+    public function findAuthorMostCommentedArticle(int $authorId): ?array{
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("
+            SELECT a.*, 
+            COUNT(DISTINCT c.id) AS comments_count
+            FROM articles a
+            LEFT JOIN comments c ON a.id = c.article_id
+            WHERE a.author_id = :author_id
+            AND EXTRACT(WEEK FROM c.created_at) = EXTRACT(WEEK FROM CURRENT_DATE)
+            AND EXTRACT(YEAR FROM c.created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            GROUP BY a.id
+            ORDER BY comments_count DESC
+            LIMIT 1
+        ");
+
+        $status = $stmt->execute(['author_id' => $authorId]);
+
+        if($status){
+            return $stmt->fetch();
+        }
+
+        return null;
+    }
+
+    public function getAuthorArticlesCount(int $authorId): ?int{
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("SELECT COUNT(id) as count FROM articles WHERE author_id = :author_id");
+
+        $status = $stmt->execute(["author_id"=> $authorId]);
+
+        if ($status) {
+            return (int) $stmt->fetchColumn();
+        }
+
+        return null;
+    }
+
     public function findById(int $id): ?array{
         $db = Database::getInstance();
 
