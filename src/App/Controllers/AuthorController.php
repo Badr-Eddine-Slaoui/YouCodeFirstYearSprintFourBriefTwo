@@ -32,14 +32,19 @@ class AuthorController extends Controller
 
         $interactions = $authorServise->getInteractions($id);
 
-        return $this->view('author.index', compact('totalLikes', 'totalComments', 'totalArticles', 'topPerformerArticle', 'topCommentedArticle', 'dailyAvgLikes', 'dailyAvgComments', 'interactions'), 'author');
+        if(!is_null($totalLikes) && !is_null($totalComments) && !is_null($totalArticles)  && !is_null($dailyAvgLikes) && !is_null($dailyAvgComments) && !is_null($interactions)){
+            return $this->view('author.index', compact('totalLikes', 'totalComments', 'totalArticles', 'topPerformerArticle', 'topCommentedArticle', 'dailyAvgLikes', 'dailyAvgComments', 'interactions'), 'author');
+        }
+
+        Session::flash("error","Something went wrong, try again later");
+        return Redirect::back();
     }
 
     public function comments(){
         $service = CommentService::getInstance();
         $comments = $service->getByAuthor(session()->get('user_id'));
 
-        if($comments){
+        if(!is_null($comments)){
             return $this->view('author.comments.index', compact('comments'), 'author');
         }
         
@@ -51,7 +56,7 @@ class AuthorController extends Controller
         $service = LikeService::getInstance();
         $likes = $service->getByAuthor(session()->get('user_id'));
 
-        if($likes){
+        if(!is_null($likes)){
             return $this->view('author.likes.index', compact('likes'), 'author');
         }
         
