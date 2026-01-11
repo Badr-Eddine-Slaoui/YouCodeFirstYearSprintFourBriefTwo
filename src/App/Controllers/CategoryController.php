@@ -40,7 +40,7 @@ class CategoryController extends Controller
 
         $category = $service->getCategory($request->id);
 
-        if($category){
+        if(!is_null($category)){
             return $this->view('admin.categories.edit', compact('category'), layout: 'admin');
         }
 
