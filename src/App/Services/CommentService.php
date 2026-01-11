@@ -18,9 +18,14 @@ class CommentService{
         return self::$CommentService;
     }
 
-    public static function getAll(): ?array{
+    public function getAll(): ?array{
         $commentRepository = CommentRepository::getInstance();
         return $commentRepository->getAll();
+    }
+
+    public function getCommentsCount(): ?int{
+        $commentRepository = CommentRepository::getInstance();
+        return $commentRepository->getCommentsCount();
     }
 
     public static function getByAuthor(int $id){
