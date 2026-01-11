@@ -4,7 +4,7 @@
         <!-- Article Header Image (Optional hero or just padding) -->
         <div class="w-full h-64 sm:h-80 bg-cover bg-center relative"
             data-alt="Futuristic sustainable greenhouse with lush green plants"
-            style='background-image: url("http://localhost:8080<?= $article->cover ?>");'>
+            style='background-image: url("<?= dns() . $article->cover ?>");'>
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                 <div class="p-8 w-full">
                     <!-- Categories/Chips on Image -->
