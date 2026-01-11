@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\DAOs\LikeDAO;
-use App\DAOs\ReaderDAO;
+use App\DAOs\UserDAO;
 use App\Mappers\LikeMapper;
 use App\Mappers\ReaderMapper;
 
@@ -22,16 +22,16 @@ class LikeRepository{
 
     public function getByArticleAuthor(int $authorId): ?array{
         $likeDAO = LikeDAO::getInstance();
-        $readerDAO = ReaderDAO::getInstance();
+        $userDAO = UserDAO::getInstance();
         $articleRepository = ArticleRepository::getInstance();
         $readerMapper= ReaderMapper::getInstance();
         $likeMapper= LikeMapper::getInstance();
 
         $likesData = $likeDAO->getByArticleAuthor($authorId);
 
-        if($likesData){
+        if(!is_null($likesData)){
             foreach($likesData as $key => $like){
-                $reader = $readerDAO->findById($like['reader_id']); 
+                $reader = $userDAO->findById($like['reader_id']); 
                 $like['reader'] = $readerMapper->map($reader);
                 $like['article'] = $articleRepository->findById($like['article_id']);
                 $likesData[$key] = $like;
