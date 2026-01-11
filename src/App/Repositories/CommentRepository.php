@@ -3,8 +3,8 @@
 namespace App\Repositories;
 
 use App\DAOs\CommentDAO;
-use App\DAOs\ReaderDAO;
 use App\DAOs\ReportDAO;
+use App\DAOs\UserDAO;
 use App\Mappers\CommentMapper;
 use App\Mappers\ReaderMapper;
 
@@ -21,18 +21,23 @@ class CommentRepository{
         return self::$instance;
     }
 
+    public function getCommentsCount(): ?int{
+        $commentDAO = CommentDAO::getInstance();
+        return $commentDAO->getCount();
+    }
+
     public function getAll(): ?array{
         $commentDAO = CommentDAO::getInstance();
-        $readerDAO= ReaderDAO::getInstance();
+        $userDAO= UserDAO::getInstance();
         $articleRepository = ArticleRepository::getInstance();
         $readerMapper= ReaderMapper::getInstance();
         $commentMapper= CommentMapper::getInstance();
 
         $rows = $commentDAO->getAll();
 
-        if($rows){
+        if(!is_null($rows)){
             foreach($rows as $key => $comment){
-                $reader = $readerDAO->findById($comment['reader_id']); 
+                $reader = $userDAO->findById($comment['reader_id']); 
                 $comment['reader'] = $readerMapper->map($reader);
                 $comment['article'] = $articleRepository->findById($comment['article_id']);
                 $rows[$key] = $comment;
@@ -51,7 +56,7 @@ class CommentRepository{
 
     public function getByArticleAuthor(int $authorId): ?array{
         $commentDAO = CommentDAO::getInstance();
-        $readerDAO = ReaderDAO::getInstance();
+        $userDAO = userDAO::getInstance();
         $reportDAO = ReportDAO::getInstance();
         $articleRepository = ArticleRepository::getInstance();
         $readerMapper= ReaderMapper::getInstance();
@@ -59,11 +64,11 @@ class CommentRepository{
 
         $commentsData = $commentDAO->getByArticleAuthor($authorId);
 
-        if($commentsData){
+        if(!is_null($commentsData)){
             foreach($commentsData as $key => $comment){
                 $is_reported = $reportDAO->isReportedBy(session()->get('user_id'), $comment['id']);
                 $comment['is_reported_by_current_user'] = $is_reported;
-                $reader = $readerDAO->findById($comment['reader_id']); 
+                $reader = $userDAO->findById($comment['reader_id']); 
                 $comment['reader'] = $readerMapper->map($reader);
                 $comment['article'] = $articleRepository->findById($comment['article_id']);
                 $commentsData[$key] = $comment;
