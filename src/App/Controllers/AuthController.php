@@ -31,7 +31,6 @@ class AuthController extends Controller
         }
 
         if(!Auth::login($request->email, $request->password)){
-            Session::flash('error','Invalid credentials');
             return Redirect::back();
         }else{
             $user = Auth::user();
