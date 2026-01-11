@@ -4,12 +4,11 @@ namespace App\Repositories;
 
 use App\DAOs\ArticleCategoryDAO;
 use App\DAOs\ArticleDAO;
-use App\DAOs\AuthorDAO;
 use App\DAOs\CategoryDAO;
 use App\DAOs\CommentDAO;
 use App\DAOs\LikeDAO;
-use App\DAOs\ReaderDAO;
 use App\DAOs\ReportDAO;
+use App\DAOs\UserDAO;
 use App\Mappers\ArticleMapper;
 use App\Mappers\AuthorMapper;
 use App\Mappers\CategoryMapper;
@@ -36,8 +35,8 @@ class ArticleRepository{
         $articleDAO = ArticleDAO::getInstance();
         $categoryDAO = CategoryDAO::getInstance();
         $commentDAO = CommentDAO::getInstance();
-        $authorDAO = AuthorDAO::getInstance();
-        $readerDAO = ReaderDAO::getInstance();
+        $userDAO = UserDAO::getInstance();
+        $userDAO = UserDAO::getInstance();
         $likeDAO = LikeDAO::getInstance();
         $reportDAO = ReportDAO::getInstance();
         $readerMapper = ReaderMapper::getInstance();
@@ -48,7 +47,7 @@ class ArticleRepository{
 
         $rows = $articleDAO->getAll();
 
-        if($rows){
+        if(!is_null($rows)){
             $articles = [];
 
             foreach ($rows as $article) {
@@ -56,12 +55,18 @@ class ArticleRepository{
 
                 $comments = $commentDAO->getByArticleId($article['id']);
 
-                $author = $authorDAO->findById($article['author_id']);
+                $author = $userDAO->findById($article['author_id']);
 
-                $isLiked = $likeDAO->isLikedBy(session()->get('user_id'), $article['id'], "article");
+                $isLiked = false;
+                $isReported = false;
+                $isAuthed = auth()->check();
+
+                if($isAuthed){
+                    $isLiked = $likeDAO->isLikedBy(session()->get('user_id'), $article['id'], "article");
+                    $isReported = $reportDAO->isReportedBy(session()->get('user_id'), $article['id']);
+                }
+
                 $article["is_liked_by_current_user"] = $isLiked;
-
-                $isReported = $reportDAO->isReportedBy(session()->get('user_id'), $article['id']);
                 $article["is_reported_by_current_user"] = $isReported;
 
                 $categories = $categoryMapper->mapMany($categoriesData);
@@ -69,9 +74,87 @@ class ArticleRepository{
 
                 if($comments){
                     foreach ($comments as $key => $comment) {
-                        $is_liked = $likeDAO->isLikedBy(session()->get('user_id'), $comment['id'], "comment");
-                        $is_reported = $reportDAO->isReportedBy(session()->get('user_id'), $comment['id']);
-                        $reader = $readerDAO->findById($comment['reader_id']);
+                        $is_liked = false;
+                        $is_reported = false;
+                        if($isAuthed){
+                            $is_liked = $likeDAO->isLikedBy(session()->get('user_id'), $comment['id'], "comment");
+                            $is_reported = $reportDAO->isReportedBy(session()->get('user_id'), $comment['id']);
+                        }
+                        $reader = $userDAO->findById($comment['reader_id']);
+                        $comment['is_liked_by_current_user'] = $is_liked;
+                        $comment["is_reported_by_current_user"] = $is_reported;
+                        $comment['reader'] = $readerMapper->map($reader);
+                        $comment['article'] = $articleMapper->map($article, $categories);
+                        $comments[$key] = $comment;
+                    }
+
+                    $comments = $commentMapper->toCommentsView($comments);
+                }else{
+                    $comments = [];
+                }
+                
+                $articles[] = $articleMapper->toArticleView(
+                    $article,
+                    $categories,
+                    $comments,
+                    $author
+                );
+            }
+            return $articles;
+        }
+        return null;
+    }
+    
+    public function getRecentArticles(): ?array{
+        $articleDAO = ArticleDAO::getInstance();
+        $categoryDAO = CategoryDAO::getInstance();
+        $commentDAO = CommentDAO::getInstance();
+        $userDAO = UserDAO::getInstance();
+        $userDAO = UserDAO::getInstance();
+        $likeDAO = LikeDAO::getInstance();
+        $reportDAO = ReportDAO::getInstance();
+        $readerMapper = ReaderMapper::getInstance();
+        $authorMapper = AuthorMapper::getInstance();
+        $articleMapper = ArticleMapper::getInstance();
+        $categoryMapper = CategoryMapper::getInstance();
+        $commentMapper = CommentMapper::getInstance();
+
+        $rows = $articleDAO->getRecentArticles();
+
+        if(!is_null($rows)){
+            $articles = [];
+
+            foreach ($rows as $article) {
+                $categoriesData = $categoryDAO->findByArticle($article['id']);
+
+                $comments = $commentDAO->getByArticleId($article['id']);
+
+                $author = $userDAO->findById($article['author_id']);
+
+                $isLiked = false;
+                $isReported = false;
+                $isAuthed = auth()->check();
+
+                if($isAuthed){
+                    $isLiked = $likeDAO->isLikedBy(session()->get('user_id'), $article['id'], "article");
+                    $isReported = $reportDAO->isReportedBy(session()->get('user_id'), $article['id']);
+                }
+
+                $article["is_liked_by_current_user"] = $isLiked;
+                $article["is_reported_by_current_user"] = $isReported;
+
+                $categories = $categoryMapper->mapMany($categoriesData);
+                $author = $authorMapper->map($author);
+
+                if($comments){
+                    foreach ($comments as $key => $comment) {
+                        $is_liked = false;
+                        $is_reported = false;
+                        if($isAuthed){
+                            $is_liked = $likeDAO->isLikedBy(session()->get('user_id'), $comment['id'], "comment");
+                            $is_reported = $reportDAO->isReportedBy(session()->get('user_id'), $comment['id']);
+                        }
+                        $reader = $userDAO->findById($comment['reader_id']);
                         $comment['is_liked_by_current_user'] = $is_liked;
                         $comment["is_reported_by_current_user"] = $is_reported;
                         $comment['reader'] = $readerMapper->map($reader);
@@ -96,6 +179,11 @@ class ArticleRepository{
         return null;
     }
 
+    public function getArticlesCount(): ?int{
+        $articleDAO = ArticleDAO::getInstance();
+        return $articleDAO->getCount();
+    }
+
     public function findByAuthor(int $authorId): ?array
     {
         $articleDAO = ArticleDAO::getInstance();
@@ -105,7 +193,7 @@ class ArticleRepository{
 
         $rows = $articleDAO->findByAuthor($authorId);
 
-        if($rows){
+        if(!is_null($rows)){
             $articles = [];
 
             foreach ($rows as $row) {
@@ -133,7 +221,7 @@ class ArticleRepository{
         $categoryMapper = CategoryMapper::getInstance();
 
         $row = $articleDAO->findAuthorMostInteractedArticle($authorId);
-        if($row){
+        if(!is_null($row)){
 
             $categoryRows = $categoryDAO->findByArticle($row['id']);
 
@@ -160,7 +248,7 @@ class ArticleRepository{
 
         $row = $articleDAO->findAuthorMostCommentedArticle($authorId);
 
-        if($row){
+        if(!is_null($row)){
 
             $categoryRows = $categoryDAO->findByArticle($row['id']);
 
@@ -192,7 +280,7 @@ class ArticleRepository{
 
         $row = $articleDAO->findById($id);
 
-        if($row){
+        if(!is_null($row)){
             $categoryRows = $categoryDAO->findByArticle($row['id']);
 
             if(!$categoryRows){
@@ -211,8 +299,8 @@ class ArticleRepository{
         $articleDAO = ArticleDAO::getInstance();
         $categoryDAO = CategoryDAO::getInstance();
         $commentDAO = CommentDAO::getInstance();
-        $authorDAO = AuthorDAO::getInstance();
-        $readerDAO = ReaderDAO::getInstance();
+        $userDAO = UserDAO::getInstance();
+        $userDAO = UserDAO::getInstance();
         $likeDAO = LikeDAO::getInstance();
         $reportDAO = ReportDAO::getInstance();
         $readerMapper = ReaderMapper::getInstance();
@@ -227,12 +315,18 @@ class ArticleRepository{
 
         $comments = $commentDAO->getByArticleId($article['id']);
 
-        $author = $authorDAO->findById($article['author_id']);
+        $author = $userDAO->findById($article['author_id']);
 
-        $isLiked = $likeDAO->isLikedBy(session()->get('user_id'), $article['id'], "article");
+        $isLiked = false;
+        $isReported = false;
+        $isAuthed = auth()->check();
+
+        if($isAuthed){
+            $isLiked = $likeDAO->isLikedBy(session()->get('user_id'), $article['id'], "article");
+            $isReported = $reportDAO->isReportedBy(session()->get('user_id'), $article['id']);
+        }
+
         $article["is_liked_by_current_user"] = $isLiked;
-
-        $isReported = $reportDAO->isReportedBy(session()->get('user_id'), $article['id']);
         $article["is_reported_by_current_user"] = $isReported;
 
         $categories = $categoryMapper->mapMany($categoriesData);
@@ -240,9 +334,13 @@ class ArticleRepository{
 
         if($comments){
             foreach ($comments as $key => $comment) {
-                $is_liked = $likeDAO->isLikedBy(session()->get('user_id'), $comment['id'], "comment");
-                $is_reported = $reportDAO->isReportedBy(session()->get('user_id'), $comment['id']);
-                $reader = $readerDAO->findById($comment['reader_id']);
+                $is_liked = false;
+                $is_reported = false;
+                if($isAuthed){
+                    $is_liked = $likeDAO->isLikedBy(session()->get('user_id'), $comment['id'], "comment");
+                    $is_reported = $reportDAO->isReportedBy(session()->get('user_id'), $comment['id']);
+                }
+                $reader = $userDAO->findById($comment['reader_id']);
                 $comment['is_liked_by_current_user'] = $is_liked;
                 $comment['is_reported_by_current_user'] = $is_reported;
                 $comment['reader'] = $readerMapper->map($reader);
