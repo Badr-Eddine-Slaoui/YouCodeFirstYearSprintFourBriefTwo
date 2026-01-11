@@ -4,6 +4,11 @@
         - last_name : string
         - email : string
         - password : string
+        - is_baned : bool
+        - is_blacklisted : bool
+        - suspend_until : DateTime
+        - tileouted_until : DateTime
+        - last_login : DateTime
         - created_at : DateTime
     }
 
