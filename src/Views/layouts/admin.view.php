@@ -33,7 +33,10 @@
                         "background-dark": "#141e16",
                         "border-light": "#c8dac9",
                         "modal-bg": "#fbfffb",
-                        "modal-text": "#3b4441"
+                        "modal-text": "#3b4441",
+                        "red-primary": "#ec1313",
+                        "toast-bg": "#fbfffb",
+                        "error": "#d32f2f"
                     },
                     fontFamily: {
                         "display": ["Work Sans", "sans-serif"]
@@ -77,6 +80,8 @@
         <?php require __DIR__ . '/admin_sidebar.view.php'; ?>
 
         <?php require $viewFile; ?>
+
+        <?php require __DIR__ . '/../partials/flash.message.php'; ?>
     </div>
 </body>
 
