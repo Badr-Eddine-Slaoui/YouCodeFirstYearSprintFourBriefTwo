@@ -25,7 +25,7 @@ class CategoryRepository{
 
         $rows = $categoryDAO->getAll();
 
-        if($rows){
+        if(!is_null($rows)){
             return $categoryMapper->mapMany($rows);
         }
 
@@ -38,7 +38,7 @@ class CategoryRepository{
 
         $rows = $categoryDAO->getAllWithArticleCount();
 
-        if($rows){
+        if(!is_null($rows)){
             return $categoryMapper->mapMany($rows);
         }
 
@@ -63,7 +63,7 @@ class CategoryRepository{
 
         $row = $categoryDAO->getById($id);
 
-        if($row){
+        if(!is_null($row)){
             return $categoryMapper->map($row);
         }
 
