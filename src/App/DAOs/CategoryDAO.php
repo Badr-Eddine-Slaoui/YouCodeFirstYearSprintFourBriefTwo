@@ -59,7 +59,7 @@ class CategoryDAO{
 
         $status = $stmt->execute();
 
-        if($status && $stmt->rowCount() > 0){
+        if($status){
             return $stmt->fetchAll();
         }
 
@@ -102,7 +102,7 @@ class CategoryDAO{
         $status = $stmt->execute(['id' => $id]);
 
         if($status && $stmt->rowCount() > 0){
-            return $stmt->fetch();
+            return $stmt->fetch() ?: null;
         }
 
         return null;
