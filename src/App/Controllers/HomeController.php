@@ -16,7 +16,7 @@ class HomeController extends Controller
 
         $articles = $service->getArticles();
         
-        if ($articles) {
+        if (!is_null($articles)) {
             return $this->view('index', compact('articles'));
         }
 
@@ -32,7 +32,7 @@ class HomeController extends Controller
 
         $article = $service->getArticleWithRelations($request->id);
 
-        if ($article) {
+        if (!is_null($article)) {
             return $this->view('article', compact('article'));
         }
 
