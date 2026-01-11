@@ -72,15 +72,17 @@
                                         Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-[#e9f1eb] dark:divide-[#2a362c]">
+                            <tbody id="categories" class="divide-y divide-[#e9f1eb] dark:divide-[#2a362c]">
                                 <?php foreach ($categories as $category): ?>
-                                    <tr class="group hover:bg-[#f9fbf9] dark:hover:bg-[#2a362c] transition-colors">
+                                    <tr data-id="<?= $category->id ?>"
+                                        class="group hover:bg-[#f9fbf9] dark:hover:bg-[#2a362c] transition-colors">
                                         <td class="p-4 pl-6">
                                             <div class="flex items-center gap-3">
                                                 <input
                                                     class="rounded border-[#5b8b66] text-primary focus:ring-primary bg-transparent"
                                                     type="checkbox" />
-                                                <span class="font-medium text-[#101912] dark:text-white"><?= $category->name ?></span>
+                                                <span
+                                                    class="name font-medium text-[#101912] dark:text-white"><?= $category->name ?></span>
                                             </div>
                                         </td>
                                         <td class="p-4 text-sm text-[#5b8b66] max-w-xs truncate">
@@ -97,21 +99,17 @@
                                             </span>
                                         </td>
                                         <td class="p-4 text-right pr-6">
-                                            <div
-                                                class="flex items-center justify-end gap-2 ">
+                                            <div class="flex items-center justify-end gap-2 ">
                                                 <a href="<?= route('admin.categories.edit') ?>?id=<?= $category->id ?>"
                                                     class="rounded-lg p-1.5 text-[#5b8b66] hover:bg-[#e9f1eb] dark:hover:bg-[#2a362c] hover:text-primary transition-colors"
                                                     title="Edit">
                                                     <span class="material-symbols-outlined text-[20px]">edit</span>
                                                 </a>
-                                                <form action="<?= route('admin.categories.destroy') ?>" method="post">
-                                                    <input type="hidden" name="id" value="<?= $category->id ?>">
-                                                    <button type="submit"
-                                                        class="rounded-lg p-1.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors"
-                                                        title="Delete">
-                                                        <span class="material-symbols-outlined text-[20px]">delete</span>
-                                                    </button>
-                                                </form>
+                                                <button onclick="openDeleteModal(<?= $category->id ?>)"
+                                                    class="rounded-lg p-1.5 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors"
+                                                    title="Delete">
+                                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -180,7 +178,8 @@
                         </div>
                         <div>
                             <p class="text-sm text-[#5b8b66]">Empty Categories</p>
-                            <p class="text-xl font-bold text-[#101912] dark:text-white"><?= $unused_categories_count ?></p>
+                            <p class="text-xl font-bold text-[#101912] dark:text-white"><?= $unused_categories_count ?>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -191,7 +190,8 @@
                         </div>
                         <div>
                             <p class="text-sm text-[#5b8b66]">Top Category</p>
-                            <p class="text-xl font-bold text-[#101912] dark:text-white"><?= $most_used_category_name ?></p>
+                            <p class="text-xl font-bold text-[#101912] dark:text-white"><?= $most_used_category_name ?? "-" ?>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -199,3 +199,69 @@
         </div>
     </div>
 </main>
+
+<div id="delete-modal"
+    class="fixed inset-0 z-40 bg-[#1b0d0d]/60 glass-effect flex items-center justify-center p-4 transition-opacity duration-300 hidden">
+    <!-- Modal Container -->
+    <!-- Note: Using requested #fbfffb for light mode background, adapting for dark mode -->
+    <form action="<?= route('admin.categories.destroy') ?>" method="post"
+        class="relative w-full max-w-[480px] transform overflow-hidden rounded-xl bg-[#fbfffb] dark:bg-[#2c1a1a] shadow-2xl transition-all border border-white/50 dark:border-white/5">
+        <input type="hidden" name="id" value="">
+        <!-- Close Button (Top Right) -->
+        <button type="button" onclick="closeDeleteModal()"
+            class="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/10 dark:hover:text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-red-primary focus:ring-offset-2">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+        <!-- Modal Content Wrapper -->
+        <div class="flex flex-col items-center px-8 pt-10 pb-8 text-center sm:px-10">
+            <!-- Icon Indicator -->
+            <div
+                class="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-primary/10 dark:bg-red-primary/20">
+                <span class="material-symbols-outlined text-[32px] text-red-primary">delete</span>
+            </div>
+            <!-- Headline -->
+            <h2 class="text-[#1b0d0d] dark:text-white tracking-tight text-[24px] font-bold leading-tight px-4 pb-3">
+                Delete Category
+            </h2>
+            <!-- Body Text -->
+            <p class="text-[#1b0d0d]/70 dark:text-white/70 text-base font-normal leading-relaxed px-2">
+                Are you sure you want to delete the category <strong
+                    class="text-[#1b0d0d] dark:text-white font-semibold">'<span class="name"></span>'</strong>? This
+                action cannot be undone and will remove the category from your blog permanently.
+            </p>
+            <!-- Action Buttons -->
+            <div class="mt-8 flex w-full flex-col gap-3 sm:flex-row">
+                <!-- Cancel Button -->
+                <button type="button" onclick="closeDeleteModal()"
+                    class="group flex flex-1 items-center justify-center rounded-lg border border-gray-200 bg-transparent px-5 py-3 text-sm font-bold uppercase tracking-wider text-[#1b0d0d] transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:border-white/10 dark:text-white dark:hover:bg-white/5">
+                    Cancel
+                </button>
+                <!-- Delete Button -->
+                <button type="submit"
+                    class="group flex flex-1 items-center justify-center rounded-lg bg-red-primary px-5 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-md shadow-red-primary/30 transition-all hover:bg-red-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-primary focus:ring-offset-2 dark:ring-offset-[#2c1a1a]">
+                    <span class="material-symbols-outlined mr-2 text-[18px]">delete_forever</span>
+                    Delete
+                </button>
+            </div>
+        </div>
+        <!-- Bottom decorative bar (Optional subtle branding touch) -->
+        <div class="h-1.5 w-full bg-red-primary/20 dark:bg-red-primary/10">
+            <div class="h-full w-1/3 bg-red-primary"></div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    function openDeleteModal(id) {
+        const deleteModal = document.getElementById('delete-modal');
+        const name = deleteModal.querySelector('.name');
+        name.textContent = document.querySelector(`#categories tr[data-id="${id}"] .name`).textContent.trim();
+        deleteModal.querySelector('input[name="id"]').value = id;
+        deleteModal.classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.add('hidden');
+    }
+</script>
