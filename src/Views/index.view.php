@@ -79,7 +79,7 @@
                 <div class="relative h-48 overflow-hidden">
                     <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
                         data-alt="Close up of code on a computer screen"
-                        style='background-image: url("http://localhost:8080<?= $article->cover ?>");'>
+                        style='background-image: url("<?= dns() . $article->cover ?>");'>
                     </div>
                 </div>
                 <div class="p-5 flex flex-col flex-1">
