@@ -92,7 +92,7 @@
                                                     class="h-16 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-100 shadow-sm">
                                                     <img alt="Laptop with code on screen"
                                                         class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                        src="http://localhost:8080<?= $article->cover ?>" />
+                                                        src="<?= dns() . $article->cover ?>" />
                                                 </div>
                                                 <div class="flex flex-col gap-1">
                                                     <h3
