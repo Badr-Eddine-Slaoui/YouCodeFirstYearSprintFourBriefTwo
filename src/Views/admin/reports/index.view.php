@@ -31,34 +31,34 @@
             <div
                 class="bg-card-light dark:bg-[#1e2a22] p-6 rounded-xl shadow-soft border border-border-light dark:border-[#2a3c2e] flex items-center gap-5">
                 <div
-                    class="size-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
+                    class="size-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
                     <span class="material-symbols-outlined">priority_high</span>
                 </div>
                 <div class="flex flex-col">
-                    <p class="text-[#5b8b66] dark:text-gray-400 text-sm font-medium">Pending Review</p>
-                    <h2 class="text-[#101912] dark:text-white text-2xl font-bold">18</h2>
+                    <p class="text-[#5b8b66] dark:text-gray-400 text-sm font-medium">Total reports (All Time)</p>
+                    <h2 class="text-[#101912] dark:text-white text-2xl font-bold"><?= $reports_count ?></h2>
                 </div>
             </div>
             <div
                 class="bg-card-light dark:bg-[#1e2a22] p-6 rounded-xl shadow-soft border border-border-light dark:border-[#2a3c2e] flex items-center gap-5">
                 <div
-                    class="size-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                    <span class="material-symbols-outlined">security</span>
+                    class="size-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
+                    <span class="material-symbols-outlined">priority_high</span>
                 </div>
                 <div class="flex flex-col">
-                    <p class="text-[#5b8b66] dark:text-gray-400 text-sm font-medium">Action Taken Today</p>
-                    <h2 class="text-[#101912] dark:text-white text-2xl font-bold">5</h2>
+                    <p class="text-[#5b8b66] dark:text-gray-400 text-sm font-medium">Pending Reports</p>
+                    <h2 class="text-[#101912] dark:text-white text-2xl font-bold"><?= $pending_reports_count ?></h2>
                 </div>
             </div>
             <div
                 class="bg-card-light dark:bg-[#1e2a22] p-6 rounded-xl shadow-soft border border-border-light dark:border-[#2a3c2e] flex items-center gap-5">
                 <div
                     class="size-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
-                    <span class="material-symbols-outlined">check_circle</span>
+                    <span class="material-symbols-outlined">done</span>
                 </div>
                 <div class="flex flex-col">
-                    <p class="text-[#5b8b66] dark:text-gray-400 text-sm font-medium">Resolved (All Time)</p>
-                    <h2 class="text-[#101912] dark:text-white text-2xl font-bold">1,240</h2>
+                    <p class="text-[#5b8b66] dark:text-gray-400 text-sm font-medium">Resolved Reports</p>
+                    <h2 class="text-[#101912] dark:text-white text-2xl font-bold"><?= $resolved_reports_count ?></h2>
                 </div>
             </div>
         </div>
@@ -141,7 +141,7 @@
                         <tbody id="reports" class="divide-y divide-border-light dark:divide-[#2a3c2e]">
                             <?php foreach ($reports as $report): ?>
                                 <?php if ($report->type === 'article'): ?>
-                                    <tr data-id="<?= $report->id ?>"
+                                    <tr data-user="<?= $report->user_id ?>" data-id="<?= $report->id ?>"
                                         class="group hover:bg-[#f0f6f1] dark:hover:bg-[#253329] transition-colors">
                                         <td class="px-4 py-4 text-center">
                                             <input
@@ -197,12 +197,17 @@
                                                 class="text-[#101912] dark:text-white text-sm"><?= $report->created_at->format('M d, Y') ?></span>
                                         </td>
                                         <td class="px-6 py-4 text-right">
-                                            <button onclick="showActionsModal(<?= $report->id ?>)"
-                                                class="text-primary hover:text-green-700 dark:text-green-400 font-medium text-sm mr-2 transition-colors">Review</button>
+                                            <?php if ($report->status === 'resolved'): ?>
+                                                <p
+                                                    class="text-primary hover:text-green-700 dark:text-green-400 font-medium text-sm mr-2 transition-colors">Reviewed</p>
+                                            <?php else: ?>
+                                                <button onclick="showActionsModal(<?= $report->id ?>)"
+                                                    class="text-primary hover:text-green-700 dark:text-green-400 font-medium text-sm mr-2 transition-colors">Review</button>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php else: ?>
-                                    <tr data-id="<?= $report->id ?>"
+                                    <tr data-user="<?= $report->user_id ?>" data-id="<?= $report->id ?>"
                                         class="group hover:bg-[#f0f6f1] dark:hover:bg-[#253329] transition-colors">
                                         <td class="px-4 py-4 text-center">
                                             <input
@@ -258,8 +263,13 @@
                                                 class="text-[#101912] dark:text-white text-sm"><?= $report->created_at->format('M d, Y') ?></span>
                                         </td>
                                         <td class="px-6 py-4 text-right">
-                                            <button onclick="showActionsModal(<?= $report->id ?>)"
-                                                class="text-primary hover:text-green-700 dark:text-green-400 font-medium text-sm mr-2 transition-colors">Review</button>
+                                            <?php if ($report->status === 'resolved'): ?>
+                                                <p
+                                                    class="text-primary hover:text-green-700 dark:text-green-400 font-medium text-sm mr-2 transition-colors">Reviewed</p>
+                                            <?php else: ?>
+                                                <button onclick="showActionsModal(<?= $report->id ?>)"
+                                                    class="text-primary hover:text-green-700 dark:text-green-400 font-medium text-sm mr-2 transition-colors">Review</button>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -324,7 +334,7 @@
         <?php endif; ?>
     </div>
 </div>
-<div id="actions-modal" data-report="" data-action="ban"
+<div id="actions-modal" data-user="" data-report="" data-action="ban"
     class="fixed inset-0 z-[100] flex items-center justify-center p-4 modal-overlay hidden">
     <div
         class="bg-modal-bg w-full max-w-lg rounded-xl shadow-modal overflow-hidden flex flex-col border border-[#c8dac9]">
@@ -433,9 +443,11 @@
 
 <div id="suspend-modal" aria-modal="true"
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden" role="dialog">
-    <div
+    <form action="<?= route('admin.users.suspend') ?>" method="post"
         class="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-[#fbfffb] dark:bg-[#1e2a22] p-8 text-left shadow-2xl transition-all border border-[#e9f1eb] dark:border-[#2a3c2e]">
-        <button onclick="closeActionModal()"
+        <input class="user_id" type="hidden" name="id" value="">
+        <input class="report_id" type="hidden" name="report_id" value="">
+        <button onclick="closeActionModal()" type="button"
             class="absolute top-4 right-4 text-[#5b8b66] hover:text-[#101912] dark:text-gray-400 dark:hover:text-white transition-colors">
             <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
         </button>
@@ -453,10 +465,8 @@
                 style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC9Gi1c-2i836eCkw0ZOc3keiie0m1_XwcHxmxzl7y3o7k-KcUFdeTwCDtb3GaD6GFp0Ik4fYm1XMTCCrYU8SZC1hj5AePijKf7YoVdD_TBmhxS7jlGZCfRaGu6-X36LAujdee_PlnqLgMiUWS71LLFIHTUoeAgyqvZwoGWUw81LgetSP7rm41Y-FaCOMbAMvUepP0bDKVpd4wzC84GUkTCKVBsNj-nyWZQltlRFHBBIkaYIfCZJCSyWvIynh5-YexN7vcB27--Zxg");'>
             </div>
             <div class="flex flex-col justify-center">
-                <p class="text-[#0d121b] dark:text-white text-base font-medium leading-normal line-clamp-1">Alex
-                    Johnson</p>
-                <p class="text-[#4c669a] dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">
-                    alex@example.com</p>
+                <p class="username text-[#0d121b] dark:text-white text-base font-medium leading-normal line-clamp-1"></p>
+                <p class="report-reason text-[#4c669a] dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2"></p>
             </div>
         </div>
         <div class="space-y-5">
@@ -466,8 +476,8 @@
                 <div class="relative">
                     <select
                         class="w-full h-11 pl-4 pr-10 rounded-lg bg-white dark:bg-[#141e16] border border-[#d4e3d7] dark:border-[#2a3c2e] text-[#101912] dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 appearance-none cursor-pointer text-sm shadow-sm transition-all font-medium"
-                        id="suspend-duration">
-                        <option value="24h">24 Hours</option>
+                        id="suspend-duration" name="suspend_duration">
+                        <option value="1d">24 Hours</option>
                         <option value="3d">3 Days</option>
                         <option value="7d">7 Days</option>
                         <option value="30d">30 Days</option>
@@ -476,16 +486,16 @@
             </div>
         </div>
         <div class="grid grid-cols-2 gap-3 mt-8">
-            <button onclick="closeActionModal()"
+            <button onclick="closeActionModal()" type="button"
                 class="flex items-center justify-center h-11 rounded-lg border border-[#d4e3d7] dark:border-[#2a3c2e] bg-white dark:bg-transparent text-[#101912] dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 font-bold text-sm transition-colors shadow-sm">
                 Cancel
             </button>
-            <button
+            <button type="submit"
                 class="flex items-center justify-center h-11 rounded-lg bg-amber-600 hover:bg-amber-700 text-white shadow-md shadow-amber-600/20 font-bold text-sm transition-all">
                 Suspend User
             </button>
         </div>
-    </div>
+    </form>
 </div>
 
 <div id="ban-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
@@ -512,10 +522,8 @@
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC9Gi1c-2i836eCkw0ZOc3keiie0m1_XwcHxmxzl7y3o7k-KcUFdeTwCDtb3GaD6GFp0Ik4fYm1XMTCCrYU8SZC1hj5AePijKf7YoVdD_TBmhxS7jlGZCfRaGu6-X36LAujdee_PlnqLgMiUWS71LLFIHTUoeAgyqvZwoGWUw81LgetSP7rm41Y-FaCOMbAMvUepP0bDKVpd4wzC84GUkTCKVBsNj-nyWZQltlRFHBBIkaYIfCZJCSyWvIynh5-YexN7vcB27--Zxg");'>
                 </div>
                 <div class="flex flex-col justify-center">
-                    <p class="text-[#0d121b] dark:text-white text-base font-medium leading-normal line-clamp-1">Alex
-                        Johnson</p>
-                    <p class="text-[#4c669a] dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">
-                        alex@example.com</p>
+                    <p class="username text-[#0d121b] dark:text-white text-base font-medium leading-normal line-clamp-1"></p>
+                    <p class="report-reason text-[#4c669a] dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2"></p>
                 </div>
             </div>
             <!-- Meta Text / Warning -->
@@ -532,10 +540,14 @@
                 class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-transparent hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent text-[#4c669a] dark:text-slate-300 text-sm font-semibold leading-normal transition-colors">
                 Cancel
             </button>
-            <button
-                class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary hover:bg-primary/90 text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-md transition-colors">
-                Ban User
-            </button>
+            <form action="<?= route('admin.users.ban') ?>" method="post">
+                <input class="user_id" type="hidden" name="id" value="">
+                <input class="report_id" type="hidden" name="report_id" value="">
+                <button type="submit"
+                    class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary hover:bg-primary/90 text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-md transition-colors">
+                    Ban User
+                </button>
+            </form>
         </div>
     </div>
 </div>
@@ -544,12 +556,14 @@
     <!-- Backdrop -->
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"></div>
     <!-- Modal Container -->
-    <div
+    <form action="<?= route('admin.users.timeout') ?>" method="post"
         class="relative z-50 w-full max-w-[600px] transform overflow-hidden rounded-xl bg-[#fbfffb] dark:bg-[#1a2c38] shadow-2xl transition-all border border-slate-100 dark:border-slate-700">
+        <input class="user_id" type="hidden" name="id" value="">
+        <input class="report_id" type="hidden" name="report_id" value="">
         <!-- Header Section -->
         <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100 dark:border-slate-800">
             <h2 class="text-[#0d141b] dark:text-white text-xl font-bold leading-tight tracking-tight">Timeout User</h2>
-            <button onclick="closeActionModal()"
+            <button onclick="closeActionModal()" type="button"
                 class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
                 <span class="material-symbols-outlined !text-[24px]">close</span>
             </button>
@@ -569,19 +583,19 @@
                     </div>
                 </div>
                 <div class="flex flex-col">
-                    <p class="text-[#0d141b] dark:text-white text-lg font-bold leading-tight">Alex Johnson</p>
-                    <p class="text-[#4c739a] dark:text-slate-400 text-sm font-medium">Reader Role • ID: #84920</p>
+                    <p class="username text-[#0d141b] dark:text-white text-lg font-bold leading-tight"></p>
+                    <p class="report-reason text-[#4c739a] dark:text-slate-400 text-sm font-medium"></p>
                 </div>
             </div>
             <!-- Duration Selection -->
             <div class="space-y-5">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-[#5b8b66] dark:text-[#8aa] mb-2"
-                        for="suspend-duration">Duration</label>
+                        for="timeout-duration">Duration</label>
                     <div class="relative">
                         <select
                             class="w-full h-11 pl-4 pr-10 rounded-lg bg-white dark:bg-[#141e16] border border-[#d4e3d7] dark:border-[#2a3c2e] text-[#101912] dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 appearance-none cursor-pointer text-sm shadow-sm transition-all font-medium"
-                            id="suspend-duration">
+                            id="timeout-duration" name="timeout_duration">
                             <option value="30min">30 Minutes</option>
                             <option value="1h">1 Hour</option>
                             <option value="2h">2 Hours</option>
@@ -606,16 +620,16 @@
         <!-- Footer Actions -->
         <div
             class="flex items-center justify-end gap-3 px-6 py-5 bg-slate-50/80 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800">
-            <button onclick="closeActionModal()"
+            <button onclick="closeActionModal()" type="button"
                 class="px-6 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-200">
                 Cancel
             </button>
-            <button
+            <button type="submit"
                 class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-bold shadow-md shadow-blue-500/20 hover:bg-blue-600 active:transform active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                 Confirm Timeout
             </button>
         </div>
-    </div>
+    </form>
 </div>
 
 <div id="blacklist-modal"
@@ -661,15 +675,9 @@
                 </div>
                 <div class="flex flex-col justify-center min-w-0">
                     <div class="flex items-center gap-2">
-                        <p class="text-[#0d1b11] dark:text-white text-base font-bold leading-tight truncate">John
-                            Doe</p>
-                        <span
-                            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wide">
-                            Author
-                        </span>
+                        <p class="username text-[#0d1b11] dark:text-white text-base font-bold leading-tight truncate"></p>
                     </div>
-                    <p class="text-[#4c9a5e] dark:text-[#6ec983] text-sm font-normal leading-normal truncate">
-                        john.doe@example.com</p>
+                    <p class="report-reason text-[#4c9a5e] dark:text-[#6ec983] text-sm font-normal leading-normal truncate"></p>
                 </div>
             </div>
         </div>
@@ -680,10 +688,14 @@
                 class="flex items-center justify-center px-5 h-11 rounded-lg text-[#0d1b11] dark:text-gray-300 text-sm font-bold bg-transparent hover:bg-gray-100 dark:hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700">
                 Cancel
             </button>
-            <button
-                class="flex items-center justify-center px-6 h-11 rounded-lg text-white text-sm font-bold bg-primary hover:bg-[#0da030] active:bg-[#0b8a29] transition-all shadow-md shadow-primary/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-[#152619]">
-                Confirm Blacklist
-            </button>
+            <form action="<?= route('admin.users.blacklist') ?>" method="post">
+                <input type="hidden" name="id" class="user_id" value="">
+                <input type="hidden" name="report_id" class="report_id" value="">
+                <button type="submit"
+                    class="flex items-center justify-center px-6 h-11 rounded-lg text-white text-sm font-bold bg-primary hover:bg-[#0da030] active:bg-[#0b8a29] transition-all shadow-md shadow-primary/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-[#152619]">
+                    Confirm Blacklist
+                </button>
+            </form>
         </div>
     </div>
 </div>
@@ -726,6 +738,8 @@
         username.textContent = document.querySelector(`#reports tr[data-id="${id}"] .full-name`).textContent;
         actionsModal.classList.remove('hidden');
         actionsModal.setAttribute('data-report', id);
+        user_id = document.querySelector(`#reports tr[data-id="${id}"]`).getAttribute('data-user');
+        actionsModal.setAttribute('data-user', user_id);
     }
 
     function closeActionsModal() {
@@ -737,7 +751,13 @@
     function openActionModal(){
         const action = actionsModal.getAttribute('data-action');
         const report = actionsModal.getAttribute('data-report');
+        const user = actionsModal.getAttribute('data-user');
         const actionModal = document.getElementById(`${action}-modal`);
+        actionModal.querySelector(".user_id").value = user;
+        actionModal.querySelector(".report_id").value = report;
+        actionModal.setAttribute('data-user', user);
+        actionModal.querySelector(".username").textContent = document.querySelector(`#reports tr[data-id="${report}"] .full-name`).textContent;
+        actionModal.querySelector(".report-reason").textContent = document.querySelector(`#reports tr[data-id="${report}"] .report-reason`).textContent;
         actionModal.classList.remove('hidden');
         actionsModal.classList.add('hidden');
     }
