@@ -60,4 +60,14 @@ class ReportRepository{
         $reportDAO = ReportDAO::getInstance();
         return $reportDAO->isReportedBy($reader_id, $target_id);
     }
+
+    public function resolvedCount(): ?int{
+        $reportDAO = ReportDAO::getInstance();
+        return $reportDAO->resolvedCount();
+    }
+
+    public function pendingCount(): ?int{
+        $reportDAO = ReportDAO::getInstance();
+        return $reportDAO->pendingCount();
+    }
 }
