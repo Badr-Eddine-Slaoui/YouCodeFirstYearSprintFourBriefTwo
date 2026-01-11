@@ -20,10 +20,15 @@ class AuthorMapper{
     public function map(array $row): Author
     {
         return new Author(
+            (int) $row["id"],
             $row["first_name"],
             $row["last_name"],
             $row["email"],
             $row["password"],
+            $row["is_baned"],
+            $row["is_blacklisted"],
+            $row["suspend_until"],
+            $row["timeouted_until"],
             $row["created_at"],
         );
     }
