@@ -36,6 +36,21 @@ class CommentDAO
         return null;
     }
 
+    public function getCount(): ?int
+    {
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("SELECT COUNT(id) as count FROM comments");
+
+        $status = $stmt->execute();
+
+        if ($status) {
+            return (int) $stmt->fetchColumn();
+        }
+
+        return null;
+    }
+
     public function getByArticleId(int $articleId): ?array
     {
         $db = Database::getInstance();
