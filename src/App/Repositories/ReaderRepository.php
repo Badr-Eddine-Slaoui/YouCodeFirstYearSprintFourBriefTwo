@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\DAOs\ReaderDAO;
+use App\DAOs\UserDAO;
 
 class ReaderRepository{
     private static ?ReaderRepository $instance = null;
@@ -18,7 +18,7 @@ class ReaderRepository{
     }
 
     public function getReader(int $id): ?array{
-        $readerDAO = ReaderDAO::getInstance();
-        return $readerDAO->findById($id);
+        $userDAO = UserDAO::getInstance();
+        return $userDAO->findById($id);
     }
 }
