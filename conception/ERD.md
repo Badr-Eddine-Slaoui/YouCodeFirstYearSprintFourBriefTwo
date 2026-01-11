@@ -7,7 +7,12 @@ erDiagram
         string email
         string password
         enum role
-        date created_at
+        bool is_baned
+        bool is_blacklisted
+        datetime suspend_until
+        datetime tileouted_until
+        datetime last_login
+        datetile created_at
     }
 
 
@@ -16,7 +21,7 @@ erDiagram
         string title
         text body
         string cover
-        date created_at
+        datetile created_at
         int author_id FK
     }
 
@@ -24,14 +29,14 @@ erDiagram
     Comment {
         int id PK
         text body
-        date created_at
+        datetile created_at
         int reader_id FK
         int article_id FK
     }
 
     Like {
         int id PK
-        date created_at
+        datetile created_at
         int comment_id FK "can be null"
         int article_id FK "can be null"
     }
@@ -45,7 +50,7 @@ erDiagram
     Report {
         int id PK
         enum message
-        date created_at
+        datetile created_at
         int comment_id FK "can be null"
         int article_id FK "can be null"
     }
