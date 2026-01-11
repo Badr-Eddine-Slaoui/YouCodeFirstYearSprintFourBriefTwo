@@ -25,6 +25,7 @@ class ReportMapper
         return array_map(
             fn($report) => new Report(
                 $report['id'],
+                $report['user_id'],
                 $report['first_name'],
                 $report['last_name'],
                 $report['content'],
