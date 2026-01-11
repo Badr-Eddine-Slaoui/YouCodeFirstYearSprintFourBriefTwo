@@ -41,6 +41,44 @@ class ArticleDAO{
         return null;
     }
 
+    public function getRecentArticles(): ?array{
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("
+            SELECT a.*, 
+            COUNT(DISTINCT l.id) AS likes_count,
+            COUNT(DISTINCT c.id) AS comments_count
+            FROM articles a
+            LEFT JOIN likes l ON a.id = l.article_id
+            LEFT JOIN comments c ON a.id = c.article_id
+            GROUP BY a.id
+            ORDER BY a.created_at DESC
+            LIMIT 5
+        ");
+
+        $status = $stmt->execute();
+
+        if($status){
+            return $stmt->fetchAll();
+        }
+
+        return null;
+    }
+
+    public function getCount(): ?int{
+        $db = Database::getInstance();
+
+        $stmt = $db->prepare("SELECT COUNT(id) as count FROM articles");
+
+        $status = $stmt->execute();
+
+        if($status){
+            return $stmt->fetchColumn();
+        }
+
+        return null;
+    }
+
     public function findByAuthor(int $authorId): ?array
     {
         $db = Database::getInstance();
@@ -91,7 +129,7 @@ class ArticleDAO{
         $status = $stmt->execute(['author_id' => $authorId]);
 
         if($status){
-            return $stmt->fetch();
+            return $stmt->fetch() ?: null;
         }
 
         return null;
@@ -116,7 +154,7 @@ class ArticleDAO{
         $status = $stmt->execute(['author_id' => $authorId]);
 
         if($status){
-            return $stmt->fetch();
+            return $stmt->fetch() ?: null;
         }
 
         return null;
@@ -154,7 +192,7 @@ class ArticleDAO{
         $status = $stmt->execute(['id' => $id]);
 
         if($status){
-            return $stmt->fetch();
+            return $stmt->fetch() ?: null;
         }
 
         return null;
