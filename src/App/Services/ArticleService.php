@@ -25,6 +25,16 @@ class ArticleService{
         return $articleRepository->findAll();
     }
 
+    public function getRecentArticles(): ?array{
+        $articleRepository = ArticleRepository::getInstance();
+        return $articleRepository->getRecentArticles();
+    }
+
+    public function getArticlesCount(): ?int{
+        $articleRepository = ArticleRepository::getInstance();
+        return $articleRepository->getArticlesCount();
+    }
+
     public function getAuthorArticles(int $author_id): ?array{
         $articleRepository = ArticleRepository::getInstance();
         return $articleRepository->findByAuthor($author_id);
