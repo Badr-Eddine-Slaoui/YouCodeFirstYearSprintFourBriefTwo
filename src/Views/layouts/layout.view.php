@@ -30,6 +30,21 @@
                         "custom-bg": "#dfeee0",
                         "custom-card": "#fbfffb",
                         "content-surface": "#fbfffb",
+                        "secondary": "#4a654f",
+                        "background-light": "#dfeee0",
+                        "background-card": "#fbfffb",
+                        "text-secondary": "#4a654f",
+                        "background-dark": "#141e16",
+                        "card-light": "#fbfffb",
+                        "border-light": "#c8dac9",
+                        "action-green": "#428950",
+                        "background-dark": "#141e16",
+                        "border-light": "#c8dac9",
+                        "modal-bg": "#fbfffb",
+                        "modal-text": "#3b4441",
+                        "red-primary": "#ec1313",
+                        "toast-bg": "#fbfffb",
+                        "error": "#d32f2f"
                     },
                     fontFamily: {
                         "display": ["Work Sans", "sans-serif"],
@@ -69,6 +84,8 @@
     <?php require $viewFile; ?>
 
     <?php require __DIR__ . '/footer.view.php'; ?>
+
+    <?php require __DIR__ . '/../partials/flash.message.php'; ?>
 
 </body>
 
