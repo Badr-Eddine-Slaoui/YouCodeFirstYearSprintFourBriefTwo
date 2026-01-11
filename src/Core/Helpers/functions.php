@@ -42,3 +42,15 @@ function diffForHuman(DateTime $date){
 function page(){
     return parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 }
+
+function dns(){
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    ? 'https'
+    : 'http';
+
+    $host = $_SERVER['HTTP_HOST'];
+
+    $baseUrl = $scheme . '://' . $host;
+
+    return $baseUrl;
+}
