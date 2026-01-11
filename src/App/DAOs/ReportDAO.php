@@ -25,6 +25,7 @@ class ReportDAO{
             FROM (
                 SELECT 
                     r.id,
+                    u.id AS user_id,
                     u.first_name,
                     u.last_name,
                     a.title AS content,
@@ -40,6 +41,7 @@ class ReportDAO{
 
                 SELECT 
                     r.id,
+                    u.id AS user_id,
                     u.first_name,
                     u.last_name,
                     c.body AS content,
@@ -123,5 +125,31 @@ class ReportDAO{
             }
         }
         return false;
+    }
+
+    public function resolveReport(int $reportId): bool{
+        $db = Database::getInstance();
+        $stmt = $db->prepare("UPDATE reports SET status = 'resolved' WHERE id = :id");
+        return $stmt->execute(['id' => $reportId]);
+    }
+
+    public function resolvedCount(): ?int{
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT COUNT(*) FROM reports WHERE status = 'resolved'");
+        $status = $stmt->execute();
+        if($status){
+            return $stmt->fetchColumn();
+        }
+        return null;
+    }
+
+    public function pendingCount(): ?int{
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT COUNT(*) FROM reports WHERE status = 'pending'");
+        $status = $stmt->execute();
+        if($status){
+            return $stmt->fetchColumn();
+        }
+        return null;
     }
 }
