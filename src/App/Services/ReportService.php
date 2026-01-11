@@ -59,4 +59,14 @@ class ReportService{
         $reportRepository = ReportRepository::getInstance();
         return $reportRepository->isReportedBy($reader_id, $target_id);
     }
+
+    public function resolvedCount(): ?int{
+        $reportRepository = ReportRepository::getInstance();
+        return $reportRepository->resolvedCount();
+    }
+
+    public function pendingCount(): ?int{
+        $reportRepository = ReportRepository::getInstance();
+        return $reportRepository->pendingCount();
+    }
 }
