@@ -20,7 +20,7 @@ class ArticleController extends Controller
             session()->get('user_id')
         );
 
-        if($articles){
+        if(!is_null($articles)){
             return $this->view('author.articles.index', compact('articles'), 'author');
         }
 
@@ -35,7 +35,7 @@ class ArticleController extends Controller
 
         $article = $service->getArticle($request->id);
 
-        if($article){
+        if(!is_null($article)){
             return $this->view('author.articles.show', compact('article'), 'author');
         }
 
@@ -48,7 +48,7 @@ class ArticleController extends Controller
         $service = CategoryService::getInstance();
         $categories = $service->getCategories();
 
-        if($categories){
+        if(!is_null($categories)){
             return $this->view('author.articles.create', compact('categories'), 'author');
         }
 
@@ -82,7 +82,7 @@ class ArticleController extends Controller
         $article = $articleService->getArticle($request->id);
         $categories = $categoryService->getCategories();
 
-        if($article && $categories){
+        if(!is_null($article) && !is_null($categories)){
             return $this->view('author.articles.edit', compact('article', 'categories'), 'author');
         }
 
@@ -115,7 +115,7 @@ class ArticleController extends Controller
 
         if($status){
             Session::flash("success","Article deleted successfully");
-            return Redirect::to("/author/articles");
+            return Redirect::back();
         }
 
         Session::flash("error","Something went wrong, try again later");
