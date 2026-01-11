@@ -7,7 +7,8 @@ class Router
     public static Router $instance;
     private array $routes = [];
     private string $currentMethod;
-    public $namedRoutes = [];
+    public array $namedRoutes = [];
+    public array $middlewares = [];
 
     public function __construct() {
         self::$instance = $this;
@@ -26,8 +27,14 @@ class Router
     }
 
     public function name(string $name){
-        $uris = array_flip($this->routes[$this->currentMethod]);
+        $uris = array_keys($this->routes[$this->currentMethod]);
         $this->namedRoutes[$name] = end($uris);
+        return $this;
+    }
+
+    public function middleware(array $middlewares){
+        $uris = array_keys($this->routes[$this->currentMethod]);
+        $this->middlewares[$this->currentMethod][end($uris)] =  $middlewares;
         return $this;
     }
 
@@ -38,6 +45,17 @@ class Router
 
         if (isset($this->routes[$requestMethod][$uri])) {
             [$controllerName, $methodName] = explode('@', $this->routes[$requestMethod][$uri]);
+
+            if(isset($this->middlewares[$requestMethod][$uri])){
+
+                $middlewares = $this->middlewares[$requestMethod][$uri];
+
+                foreach ($middlewares as $middleware) {
+                    $middlewareClass = "App\\Middlewares\\$middleware";
+                    $middlewareInstance = new $middlewareClass();
+                    $middlewareInstance->handle();
+                }
+            }
 
             $controllerClass = "App\\Controllers\\$controllerName";
             $controller = new $controllerClass();
