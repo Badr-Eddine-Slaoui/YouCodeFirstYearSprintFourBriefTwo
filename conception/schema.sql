@@ -11,6 +11,11 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     role user_role NOT NULL DEFAULT 'reader',
+    is_baned BOOLEAN NOT NULL DEFAULT false,
+    is_blacklisted BOOLEAN NOT NULL DEFAULT false,
+    suspend_until TIMESTAMP DEFAULT NULL,
+    timeouted_until TIMESTAMP DEFAULT NULL,
+    last_login TIMESTAMP DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
