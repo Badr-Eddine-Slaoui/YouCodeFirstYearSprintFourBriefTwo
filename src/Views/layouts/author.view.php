@@ -33,6 +33,16 @@
                         "sh-content-surface": "#fbfffb",
                         "sh-text-main": "#0d1b12",
                         "sh-text-muted": "#4c9a66",
+                        "card-light": "#fbfffb",
+                        "border-light": "#c8dac9",
+                        "action-green": "#428950",
+                        "background-dark": "#141e16",
+                        "border-light": "#c8dac9",
+                        "modal-bg": "#fbfffb",
+                        "modal-text": "#3b4441",
+                        "red-primary": "#ec1313",
+                        "toast-bg": "#fbfffb",
+                        "error": "#d32f2f"
                     },
                     fontFamily: {
                         "display": ["Work Sans", "sans-serif"]
@@ -67,6 +77,8 @@
         <?php require __DIR__ . '/author_sidebar.view.php'; ?>
 
         <?php require $viewFile; ?>
+
+        <?php require __DIR__ . '/../partials/flash.message.php'; ?>
     </div>
 </body>
 
