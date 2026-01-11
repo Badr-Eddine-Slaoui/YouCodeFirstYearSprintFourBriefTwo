@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\DAOs\AuthorDAO;
+use App\DAOs\UserDAO;
 use App\Mappers\InteractionMapper;
 
 class AuthorRepository{
@@ -19,16 +19,16 @@ class AuthorRepository{
     }
 
     public function getAuthor(int $id): ?array{
-        $authorDAO = AuthorDAO::getInstance();
-        return $authorDAO->findById($id);
+        $userDAO = UserDAO::getInstance();
+        return $userDAO->findById($id);
     }
 
     public function findInteractions(int $authorId): ?array{
-        $authorDAO = AuthorDAO::getInstance();
+        $userDAO = UserDAO::getInstance();
         $interactionMapper = InteractionMapper::getInstance();
-        $rows = $authorDAO->getAuthorArticlesInteractions($authorId);
+        $rows = $userDAO->getAuthorArticlesInteractions($authorId);
 
-        if($rows){
+        if(!is_null($rows)){
             return $interactionMapper->map($rows);
         }
 
