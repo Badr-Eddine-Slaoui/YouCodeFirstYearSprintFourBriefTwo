@@ -96,42 +96,46 @@
                         </div>
                     </div>
                     <div class="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div class="flex flex-col gap-2 rounded-lg bg-[#f0f7f1] p-4 dark:bg-[#253528]/50">
-                            <div class="flex items-center gap-2 text-primary dark:text-primary">
-                                <span class="material-symbols-outlined">star</span>
-                                <span class="text-xs font-bold uppercase tracking-wide">Top Performer</span>
-                            </div>
-                            <p class="text-sm font-medium text-text-secondary dark:text-gray-400">Article with
-                                most traction</p>
-                            <div class="mt-auto pt-2">
-                                <h4 class="line-clamp-1 text-lg font-bold text-text-main dark:text-white"><?= $topPerformerArticle->title ?></h4>
-                                <div class="mt-1 flex items-center gap-3 text-xs text-text-secondary">
-                                    <span class="flex items-center gap-1"><span
-                                            class="material-symbols-outlined text-[14px]">thumb_up</span>
-                                        <?= $topPerformerArticle->likes_count ?></span>
-                                    <span>•</span>
-                                    <span class="flex items-center gap-1"><span
-                                            class="material-symbols-outlined text-[14px]">chat_bubble</span>
-                                        <?= $topPerformerArticle->comments_count ?></span>
+                        <?php if (!is_null($topPerformerArticle)): ?>
+                            <div class="flex flex-col gap-2 rounded-lg bg-[#f0f7f1] p-4 dark:bg-[#253528]/50">
+                                <div class="flex items-center gap-2 text-primary dark:text-primary">
+                                    <span class="material-symbols-outlined">star</span>
+                                    <span class="text-xs font-bold uppercase tracking-wide">Top Performer</span>
+                                </div>
+                                <p class="text-sm font-medium text-text-secondary dark:text-gray-400">Article with
+                                    most traction</p>
+                                <div class="mt-auto pt-2">
+                                    <h4 class="line-clamp-1 text-lg font-bold text-text-main dark:text-white"><?= $topPerformerArticle->title ?></h4>
+                                    <div class="mt-1 flex items-center gap-3 text-xs text-text-secondary">
+                                        <span class="flex items-center gap-1"><span
+                                                class="material-symbols-outlined text-[14px]">thumb_up</span>
+                                            <?= $topPerformerArticle->likes_count ?></span>
+                                        <span>•</span>
+                                        <span class="flex items-center gap-1"><span
+                                                class="material-symbols-outlined text-[14px]">chat_bubble</span>
+                                            <?= $topPerformerArticle->comments_count ?></span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex flex-col gap-2 rounded-lg bg-orange-50 p-4 dark:bg-orange-900/10">
-                            <div class="flex items-center gap-2 text-orange-600 dark:text-orange-400">
-                                <span class="material-symbols-outlined">forum</span>
-                                <span class="text-xs font-bold uppercase tracking-wide">Most Discussed</span>
-                            </div>
-                            <p class="text-sm font-medium text-text-secondary dark:text-gray-400">Active
-                                comments this week</p>
-                            <div class="mt-auto pt-2">
-                                <h4 class="text-lg font-bold text-text-main dark:text-white"><?= $topCommentedArticle->title ?></h4>
-                                <div class="mt-1 flex items-center gap-3 text-xs text-text-secondary">
-                                    <span class="flex items-center gap-1"><span
-                                            class="material-symbols-outlined text-[14px]">chat_bubble</span> <?= $topCommentedArticle->comments_count ?>
-                                        New Comments</span>
+                        <?php endif; ?>
+                        <?php if (!is_null($topCommentedArticle)): ?>
+                            <div class="flex flex-col gap-2 rounded-lg bg-orange-50 p-4 dark:bg-orange-900/10">
+                                <div class="flex items-center gap-2 text-orange-600 dark:text-orange-400">
+                                    <span class="material-symbols-outlined">forum</span>
+                                    <span class="text-xs font-bold uppercase tracking-wide">Most Discussed</span>
+                                </div>
+                                <p class="text-sm font-medium text-text-secondary dark:text-gray-400">Active
+                                    comments this week</p>
+                                <div class="mt-auto pt-2">
+                                    <h4 class="text-lg font-bold text-text-main dark:text-white"><?= $topCommentedArticle->title ?></h4>
+                                    <div class="mt-1 flex items-center gap-3 text-xs text-text-secondary">
+                                        <span class="flex items-center gap-1"><span
+                                                class="material-symbols-outlined text-[14px]">chat_bubble</span> <?= $topCommentedArticle->comments_count ?>
+                                            New Comments</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
                         <div class="flex flex-col gap-2 rounded-lg bg-blue-50 p-4 dark:bg-blue-900/10">
                             <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400">
                                 <span class="material-symbols-outlined">trending_up</span>
@@ -203,7 +207,18 @@
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            
+                            <div
+                                class="bg-white dark:bg-[#1a261d] rounded-xl border border-[#e9f1eb] dark:border-gray-800 shadow-sm p-12 flex flex-col items-center justify-center text-center min-h-[400px]">
+                                <div
+                                    class="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+                                    <span
+                                        class="material-symbols-outlined text-5xl text-gray-300 dark:text-gray-600">sentiment_dissatisfied</span>
+                                </div>
+                                <h2 class="text-xl font-bold text-[#101912] dark:text-white mb-2">No interactions found</h2>
+                                <p class="text-gray-500 dark:text-gray-400 max-w-sm mb-8">
+                                    It looks like there's no interaction to display. Wait until users do something.
+                                </p>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </div>
